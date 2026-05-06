@@ -7,13 +7,12 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 20px; }
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; padding-top: 20px; }
         .tiffin-card { border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
         .header-section { background: linear-gradient(135deg, #198754, #146c43); color: white; padding: 25px; }
         .summary-box { background: #fff; border-left: 5px solid #198754; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .loader-container { display: flex; justify-content: center; align-items: center; min-height: 200px; }
         .table thead { background-color: #343a40; color: white; }
-        .badge-custom { font-size: 0.9rem; padding: 0.5em 0.8em; }
     </style>
 </head>
 <body>
@@ -45,9 +44,7 @@
 
             <!-- Loader -->
             <div id="loader" class="loader-container">
-                <div class="spinner-border text-success" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+                <div class="spinner-border text-success" role="status"></div>
             </div>
 
             <!-- Data Table -->
@@ -63,7 +60,7 @@
                             </tr>
                         </thead>
                         <tbody id="member-list">
-                            <!-- Data injected here -->
+                            <!-- Data injected from script.js -->
                         </tbody>
                     </table>
                 </div>
@@ -72,50 +69,8 @@
     </div>
 </div>
 
-<script>
-    // আপনার দেওয়া গুগল অ্যাপস স্ক্রিপ্ট URL
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbxQm2AC-QXYCwVHyBqC4W7w5El_3JToAXxfvzNYSAiPZJFOrWy1qIIQ-35Wu22hHddaoQ/exec";
-
-    async function fetchData() {
-        try {
-            const response = await fetch(webAppUrl);
-            const data = await response.json();
-            
-            // UI Update: Summary
-            document.getElementById('month-text').innerText = "Month: " + (data.summary.month || "N/A");
-            document.getElementById('total-amt').innerText = "৳ " + (data.summary.totalAmount || 0);
-            document.getElementById('total-exp').innerText = "৳ " + (data.summary.totalExpense || 0);
-
-            // UI Update: Member List
-            const listBody = document.getElementById('member-list');
-            listBody.innerHTML = ''; // Clear previous data
-
-            data.members.forEach(member => {
-                const row = `
-                    <tr>
-                        <td class="fw-bold text-dark">${member.name}</td>
-                        <td><span class="badge bg-primary badge-custom">৳ ${member.taka}</span></td>
-                        <td><span class="badge bg-info text-dark badge-custom">${member.meal} Meals</span></td>
-                        <td class="fw-bold text-success">৳ ${member.handcash}</td>
-                    </tr>
-                `;
-                listBody.innerHTML += row;
-            });
-
-            // Hide loader, show content
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            document.getElementById('loader').innerHTML = `<p class="text-danger">Failed to load data. Please check connection.</p>`;
-        }
-    }
-
-    // অ্যাপ লোড হওয়ার সাথে সাথে ফাংশনটি চলবে
-    window.onload = fetchData;
-</script>
-
+<!-- Linking separate JavaScript file -->
+<script src="script.js"></script>
 <!-- Bootstrap Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
