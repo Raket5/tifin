@@ -1,4 +1,5 @@
-const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyokN5x09ApLnXj5gpyQGFnz4Vek3z7JbgeL0UQ6daukzsh2kcbw4MerKo-HYinlHbr/exec";
+// CHANGE THIS TO YOUR APPS SCRIPT URL
+const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAarw1kAdGrfBT8PUyCOyhoc06NekPVUx89bdpYCDNKae8Z0U9vuWi7x1xQYn7AZRKqA/exec";
 
 let membersData = [];
 let isAdmin = false;
@@ -11,11 +12,6 @@ $(document).ready(function() {
         $(this).addClass('active');
         $('.page').removeClass('active');
         $(`#${page}-page`).addClass('active');
-        
-        // Refresh admin panel if needed
-        if (page === 'admin' && isAdmin) {
-            loadMemberEditList();
-        }
     });
     
     loadData();
@@ -38,73 +34,72 @@ async function loadData() {
         }
         
         membersData = data.members || [];
-        summaryData = data.summary || {};
+        summaryData = data;
         
-        // Update Dashboard
+        // Calculate totals
         const totalAmount = membersData.reduce((sum, m) => sum + (Number(m.taka) || 0), 0);
         const totalMembers = membersData.length;
         const avgAmount = totalMembers > 0 ? totalAmount / totalMembers : 0;
+        const totalExpense = Number(data.totalExpense) || 0;
+        const month = data.month || 'January';
         
+        // Update UI
         $('#totalAmount').text(`৳ ${totalAmount.toFixed(2)}`);
-        $('#totalExpense').text(`৳ ${(summaryData.totalExpense || 0).toFixed(2)}`);
-        $('#monthName').text(summaryData.month || 'January');
-        $('#totalMeals').text('0'); // You can calculate from meal data if available
+        $('#totalExpense').text(`৳ ${totalExpense.toFixed(2)}`);
+        $('#monthName').text(month);
         $('#totalMembers').text(totalMembers);
         $('#avgAmount').text(`৳ ${avgAmount.toFixed(2)}`);
         $('#footerAmount').text(`৳ ${totalAmount.toFixed(2)}`);
-        $('#footerExpense').text(`৳ ${(summaryData.totalExpense || 0).toFixed(2)}`);
-        $('#footerMonth').text(summaryData.month || 'January');
+        $('#footerExpense').text(`৳ ${totalExpense.toFixed(2)}`);
+        $('#footerMonth').text(month);
         
-        // Display note
-        if (summaryData.note) {
-            $('#noteDisplay').html(`<i class="fas fa-sticky-note"></i> ${summaryData.note}`);
+        // Update note
+        if (data.note && data.note !== "") {
+            $('#noteDisplay').html(`<i class="fas fa-sticky-note"></i> ${data.note}`);
         } else {
-            $('#noteDisplay').html(`<i class="fas fa-sticky-note"></i> No notes yet. Login as admin to add notes.`);
+            $('#noteDisplay').html(`<i class="fas fa-sticky-note"></i> No notes. Login as admin to add.`);
         }
         
-        // Update Members Table
-        renderMembersTable();
+        // Render members table
+        const tbody = $('#membersTable');
+        tbody.empty();
+        membersData.forEach((member, idx) => {
+            tbody.append(`<tr>
+                <td>${idx + 1}</td>
+                <td><i class="fas fa-user-circle"></i> ${member.name}</td>
+                <td><span class="badge-taka">৳ ${Number(member.taka).toFixed(2)}</span></td>
+            </tr>`);
+        });
         
-        // Update Admin Edit List if logged in
+        // Update admin panel if logged in
         if (isAdmin) {
             loadMemberEditList();
+            $('#expenseInput').val(totalExpense);
+            $('#noteInput').val(data.note || '');
         }
         
         $('#loader').hide();
         
-    } catch (error) {
-        console.error('Error:', error);
-        $('#loader').html(`<div class="alert alert-danger m-3"><strong>Error:</strong> ${error.message}<br><br>Check console for details.</div>`);
+    } catch(error) {
+        console.error(error);
+        $('#loader').html(`<div class="alert alert-danger m-3">Error: ${error.message}<br><br>Check: Apps Script URL correct? Deployed with "Anyone" access?</div>`);
     }
 }
 
-function renderMembersTable() {
-    const tbody = $('#membersTable');
-    tbody.empty();
-    
-    membersData.forEach((member, index) => {
-        const row = `<tr>
-            <td>${index + 1}</td>
-            <td><i class="fas fa-user-circle"></i> ${member.name}</td>
-            <td><span class="badge badge-taka">৳ ${Number(member.taka).toFixed(2)}</span></td>
-            <td><span class="badge badge-meal"><i class="fas fa-check-circle"></i> Active</span></td>
-        </tr>`;
-        tbody.append(row);
-    });
-}
-
 function loadMemberEditList() {
-    const tbody = $('#memberEditList');
-    tbody.empty();
+    const container = $('#memberEditList');
+    container.empty();
     
-    membersData.forEach((member, index) => {
-        const row = `<tr>
-            <td>${member.name}</td>
-            <td>৳ ${Number(member.taka).toFixed(2)}</td>
-            <td><input type="number" id="editTaka_${index}" class="form-control form-control-sm" value="${member.taka}" style="width:120px"></td>
-            <td><button class="btn btn-sm btn-warning" onclick="updateMemberTaka(${index})">Update</button></td>
-        </tr>`;
-        tbody.append(row);
+    membersData.forEach((member, idx) => {
+        container.append(`
+            <div class="member-edit-item">
+                <div><strong>${member.name}</strong><br><small>Current: ৳ ${Number(member.taka).toFixed(2)}</small></div>
+                <div>
+                    <input type="number" id="editTaka_${idx}" value="${member.taka}" class="form-control" style="width: 150px; display: inline-block;">
+                    <button class="btn btn-warning btn-sm" onclick="updateMemberTaka(${idx})">Update</button>
+                </div>
+            </div>
+        `);
     });
 }
 
@@ -122,8 +117,7 @@ async function updateMemberTaka(index) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: 'updateMember', index: index, taka: newTaka })
         });
-        
-        alert('✅ Member deposit updated!');
+        alert('✅ Member deposit updated successfully!');
         loadData();
     } catch(e) {
         alert('Error: ' + e.message);
@@ -148,9 +142,7 @@ async function updateExpense() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: 'updateExpense', expense: expense })
         });
-        
-        alert('✅ Total expense updated!');
-        $('#expenseInput').val('');
+        alert('✅ Total expense updated successfully!');
         loadData();
     } catch(e) {
         alert('Error: ' + e.message);
@@ -171,9 +163,7 @@ async function updateNote() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: 'updateNote', note: note })
         });
-        
-        alert('✅ Note updated!');
-        $('#noteInput').val('');
+        alert('✅ Note updated successfully!');
         loadData();
     } catch(e) {
         alert('Error: ' + e.message);
