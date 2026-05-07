@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BN Tiffin</title>
+    <title>BN</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -103,60 +103,72 @@
             color: white;
         }
 
-        .month-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 20px;
-            border-radius: 50px;
-            margin-top: 15px;
-            color: white;
-        }
-
-        /* Stats Cards - Beautiful Summary Section */
-        .summary-stats {
+        /* Summary Table - Separate Beautiful Table for Total Amount, Expense, Month */
+        .summary-table-container {
             padding: 30px;
             background: #f8f9fa;
         }
 
-        .summary-card {
+        .summary-table-wrapper {
             background: white;
             border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s ease;
+            overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border-left: 5px solid;
         }
 
-        .summary-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        .summary-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
         }
 
-        .summary-card i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .summary-card .label {
-            color: #6c757d;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
+        .summary-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f0f0;
         }
 
-        .summary-card .value {
-            font-size: 2rem;
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .summary-table .label {
+            font-weight: 700;
+            color: #333;
+            font-size: 1rem;
+            width: 40%;
+        }
+
+        .summary-table .value {
             font-weight: 800;
-            margin-top: 10px;
+            font-size: 1.3rem;
         }
 
-        .card-total { border-left-color: #28a745; }
-        .card-expense { border-left-color: #dc3545; }
-        .card-month { border-left-color: #17a2b8; }
+        .summary-table .value.total {
+            color: #28a745;
+        }
 
-        /* Table */
+        .summary-table .value.expense {
+            color: #dc3545;
+        }
+
+        .summary-table .value.month {
+            color: #17a2b8;
+        }
+
+        .summary-table i {
+            width: 30px;
+            margin-right: 10px;
+        }
+
+        /* Members Table */
         .table-container {
             padding: 0 30px 30px 30px;
         }
@@ -277,8 +289,11 @@
             .nav-link-custom span {
                 display: none;
             }
-            .summary-card .value {
-                font-size: 1.3rem;
+            .summary-table .value {
+                font-size: 1rem;
+            }
+            .summary-table td {
+                padding: 12px 15px;
             }
         }
     </style>
@@ -301,10 +316,6 @@
         <!-- Header -->
         <div class="header-gradient">
             <h1><i class="fas fa-utensils me-2"></i>BN Tiffin Management</h1>
-            <div class="month-badge">
-                <i class="far fa-calendar-alt me-2"></i>
-                <span id="month-text">Loading...</span>
-            </div>
         </div>
 
         <!-- Loader -->
@@ -315,55 +326,66 @@
 
         <!-- Dashboard Page -->
         <div id="dashboard-page" class="page active-page">
-            <!-- Summary Cards - Total Amount, Total Expense, Month ONLY -->
-            <div class="summary-stats">
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="summary-card card-total">
-                            <i class="fas fa-money-bill-wave text-success"></i>
-                            <div class="label">TOTAL AMOUNT</div>
-                            <div class="value text-success" id="total-amt">৳ 0</div>
-                        </div>
+            <!-- SEPARATE TABLE FOR TOTAL AMOUNT, TOTAL EXPENSE, MONTH ONLY -->
+            <div class="summary-table-container">
+                <div class="summary-table-wrapper">
+                    <div class="summary-title">
+                        <i class="fas fa-chart-simple me-2"></i> Financial Summary
                     </div>
-                    <div class="col-md-4">
-                        <div class="summary-card card-expense">
-                            <i class="fas fa-receipt text-danger"></i>
-                            <div class="label">TOTAL EXPENSE</div>
-                            <div class="value text-danger" id="total-exp">৳ 0</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="summary-card card-month">
-                            <i class="fas fa-calendar-alt text-info"></i>
-                            <div class="label">CURRENT MONTH</div>
-                            <div class="value text-info" id="month-display">January</div>
-                        </div>
-                    </div>
+                    <table class="summary-table">
+                        <tr>
+                            <td class="label">
+                                <i class="fas fa-money-bill-wave text-success"></i> Total Amount
+                            </td>
+                            <td class="value total" id="total-amt-display">৳ 0.00</td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <i class="fas fa-receipt text-danger"></i> Total Expense
+                            </td>
+                            <td class="value expense" id="total-exp-display">৳ 0.00</td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <i class="fas fa-calendar-alt text-info"></i> Month
+                            </td>
+                            <td class="value month" id="month-display">January</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
 
-            <!-- Extra Stats: Total Meals, Members, Average (Optional) -->
-            <div class="summary-stats pt-0">
+            <!-- Extra Stats: Total Meals, Members, Average -->
+            <div class="summary-table-container pt-0">
                 <div class="row g-4">
                     <div class="col-md-4">
-                        <div class="summary-card" style="border-left-color: #f39c12;">
-                            <i class="fas fa-utensils text-warning"></i>
-                            <div class="label">TOTAL MEALS</div>
-                            <div class="value text-warning" id="total-meals">0</div>
+                        <div class="summary-table-wrapper">
+                            <div class="summary-title" style="background: linear-gradient(135deg, #f39c12, #e67e22);">
+                                <i class="fas fa-utensils"></i> Total Meals
+                            </div>
+                            <div style="padding: 20px; text-align: center;">
+                                <span style="font-size: 2rem; font-weight: 800; color: #f39c12;" id="total-meals">0</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="summary-card" style="border-left-color: #17a2b8;">
-                            <i class="fas fa-users text-info"></i>
-                            <div class="label">TOTAL MEMBERS</div>
-                            <div class="value text-info" id="total-members">0</div>
+                        <div class="summary-table-wrapper">
+                            <div class="summary-title" style="background: linear-gradient(135deg, #17a2b8, #138496);">
+                                <i class="fas fa-users"></i> Total Members
+                            </div>
+                            <div style="padding: 20px; text-align: center;">
+                                <span style="font-size: 2rem; font-weight: 800; color: #17a2b8;" id="total-members">0</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="summary-card" style="border-left-color: #6c757d;">
-                            <i class="fas fa-chart-pie text-secondary"></i>
-                            <div class="label">AVERAGE / PERSON</div>
-                            <div class="value text-secondary" id="avg-amount">৳ 0</div>
+                        <div class="summary-table-wrapper">
+                            <div class="summary-title" style="background: linear-gradient(135deg, #6c757d, #495057);">
+                                <i class="fas fa-chart-pie"></i> Average/Person
+                            </div>
+                            <div style="padding: 20px; text-align: center;">
+                                <span style="font-size: 2rem; font-weight: 800; color: #6c757d;" id="avg-amount">৳ 0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -396,14 +418,14 @@
 
         <!-- Reports Page -->
         <div id="reports-page" class="page">
-            <div class="summary-stats">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="summary-card text-center">
-                            <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
-                            <h4>Reports & Analytics</h4>
-                            <p class="text-muted">Coming soon! Monthly summary and expense reports will be available here.</p>
-                        </div>
+            <div class="summary-table-container">
+                <div class="summary-table-wrapper">
+                    <div class="summary-title">
+                        <i class="fas fa-chart-line me-2"></i> Reports & Analytics
+                    </div>
+                    <div style="padding: 40px; text-align: center;">
+                        <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                        <p class="text-muted">Coming soon! Monthly summary and expense reports will be available here.</p>
                     </div>
                 </div>
             </div>
@@ -411,14 +433,14 @@
 
         <!-- Settings Page -->
         <div id="settings-page" class="page">
-            <div class="summary-stats">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="summary-card text-center">
-                            <i class="fas fa-cog fa-3x text-primary mb-3"></i>
-                            <h4>Settings Panel</h4>
-                            <p class="text-muted">Coming soon! Configure meal rate, expense categories, and more.</p>
-                        </div>
+            <div class="summary-table-container">
+                <div class="summary-table-wrapper">
+                    <div class="summary-title">
+                        <i class="fas fa-cog me-2"></i> Settings Panel
+                    </div>
+                    <div style="padding: 40px; text-align: center;">
+                        <i class="fas fa-cog fa-3x text-primary mb-3"></i>
+                        <p class="text-muted">Coming soon! Configure meal rate, expense categories, and more.</p>
                     </div>
                 </div>
             </div>
