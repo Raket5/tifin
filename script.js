@@ -3,7 +3,7 @@
 // =============================================
 
 // ⚠️  CHANGE THIS TO YOUR DEPLOYED APPS SCRIPT URL
-const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydCAxI2De7m9-tlYcL3jIi95hq7m4tIjdSu8QrdEPUDpSW0Vy7AgoSpzWdleL6R6W3/exec";
+const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxS8SteGfS7hWCtRrEfI0K0n5eM09BhZAt3U2JUPmishxYz-PAellbNZabCdlBuOjm3Q/exec";
 
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "admin123";
