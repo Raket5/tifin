@@ -1,11 +1,9 @@
-// Web App URL - Apnar current URL ta ekhane boshan
-const webAppUrl = "https://script.google.com/macros/s/AKfycbznS2vx9L38fUFWo3FCUSVNkWl7K0PBiuynQFmSxCQ89aGNaeeqxFGDuoKhi-yUBgAOIg/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbydt2y82eYOuSCHnfn19ByBRcIYwBPQrpS1qBabWARoOivTmlNPrGFtA1DNa4uRatFX6w/exec";
 
 let membersData = [];
 let isAdmin = false;
 let currentEditIndex = null;
 
-// Navigation
 document.querySelectorAll('.nav-link-custom').forEach(link => {
     link.addEventListener('click', function() {
         const pageId = this.getAttribute('data-page');
@@ -28,7 +26,6 @@ function verifyLogin() {
     const username = document.getElementById('adminUsername').value;
     const password = document.getElementById('adminPassword').value;
     
-    // CHANGE YOUR USERNAME AND PASSWORD HERE
     if (username === 'admin' && password === 'admin123') {
         isAdmin = true;
         bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
@@ -40,7 +37,7 @@ function verifyLogin() {
         document.getElementById('edit-col-header').style.display = 'table-cell';
         renderMembersTable();
         
-        alert('✅ Admin login successful! You can now edit data.');
+        alert('✅ Admin login successful!');
     } else {
         document.getElementById('loginError').textContent = '❌ Invalid username or password!';
         document.getElementById('loginError').classList.remove('d-none');
@@ -75,6 +72,7 @@ async function saveMemberData() {
     
     membersData[currentEditIndex] = updatedMember;
     await updateGoogleSheet();
+    await fetchData();
     renderMembersTable();
     updateDashboardStats();
     
@@ -102,18 +100,9 @@ function renderMembersTable() {
     
     membersData.forEach((member, index) => {
         const mealText = member.meal === 1 ? 'Meal' : 'Meals';
-        const editButton = isAdmin ? 
-            `<td><button class="edit-btn" onclick="editMember(${index})"><i class="fas fa-edit"></i> Edit</button></td>` : '';
+        const editButton = isAdmin ? `<td><button class="edit-btn" onclick="editMember(${index})"><i class="fas fa-edit"></i> Edit</button></td>` : '';
         
-        const row = `
-            <tr>
-                <td><i class="fas fa-user-circle text-primary me-2"></i>${member.name}</td>
-                <td><span class="badge-custom" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 5px 12px; border-radius: 8px;">৳ ${(member.taka || 0).toFixed(2)}</span></td>
-                <td><span class="badge-custom" style="background: #ffecd2; color: #f39c12; padding: 5px 12px; border-radius: 8px;"><i class="fas fa-utensils me-1"></i>${member.meal || 0} ${mealText}</span></td>
-                <td><span class="badge-custom" style="background: #d4edda; color: #28a745; padding: 5px 12px; border-radius: 8px;"><i class="fas fa-hand-holding-usd me-1"></i>৳ ${(member.handcash || 0).toFixed(2)}</span></td>
-                ${editButton}
-            </tr>
-        `;
+        const row = `<tr><td><i class="fas fa-user-circle me-2"></i>${member.name}</td><td><span class="badge-taka">৳ ${(member.taka || 0).toFixed(2)}</span></td><td><span class="badge-meal">${member.meal || 0} ${mealText}</span></td><td><span class="badge-handcash">৳ ${(member.handcash || 0).toFixed(2)}</span></td>${editButton}</tr>`;
         listBody.innerHTML += row;
     });
 }
@@ -129,17 +118,14 @@ function updateDashboardStats() {
         totalExpense = Number(window.summaryData.totalExpense);
     }
     
-    // Update Summary Table (Separate)
     document.getElementById('total-amt-display').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
     document.getElementById('total-exp-display').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
     document.getElementById('month-display').innerHTML = window.summaryData?.month || 'January';
     
-    // Update Extra Stats
     document.getElementById('total-meals').innerText = totalMeals;
     document.getElementById('total-members').innerText = totalMembers;
     document.getElementById('avg-amount').innerHTML = `৳ ${avgAmount.toFixed(2)}`;
     
-    // Update Footer
     document.getElementById('footer-total').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
     document.getElementById('footer-expense').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
     document.getElementById('footer-month').innerText = window.summaryData?.month || 'January';
@@ -149,13 +135,24 @@ async function fetchData() {
     try {
         document.getElementById('loader').style.display = 'block';
         
-        const response = await fetch(webAppUrl);
+        const timestamp = new Date().getTime();
+        const response = await fetch(`${webAppUrl}?t=${timestamp}`, {
+            cache: 'no-store',
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        });
+        
         const data = await response.json();
         
         if (data.error) throw new Error(data.error);
         
         membersData = data.members || [];
         window.summaryData = data.summary || {};
+        
+        console.log("Fresh Data Loaded:", window.summaryData);
         
         updateDashboardStats();
         renderMembersTable();
@@ -170,5 +167,5 @@ async function fetchData() {
 
 window.onload = () => {
     fetchData();
-    setInterval(fetchData, 30000);
+    setInterval(fetchData, 10000);
 };
