@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BN Tiffin</title>
+    <title>BN Tiffin Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
             padding: 20px;
         }
@@ -65,10 +62,9 @@
             border-radius: 40px;
             font-weight: 600;
             transition: 0.3s;
+            cursor: pointer;
         }
         .login-btn.admin-mode { background: #4caf50; color: white; }
-        .login-btn:hover { transform: translateY(-2px); }
-        /* Header */
         .header {
             background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
             padding: 30px;
@@ -81,7 +77,7 @@
             -webkit-text-fill-color: transparent;
             font-weight: 700;
         }
-        /* Summary Section */
+        /* Summary Cards */
         .summary-section { padding: 25px; background: #fafafa; }
         .summary-card {
             background: white;
@@ -101,7 +97,14 @@
         .value-amount { color: #2e7d32; }
         .value-expense { color: #d32f2f; }
         .value-month { color: #f57c00; }
-        /* Stats Grid */
+        .note-text {
+            background: #fff3cd;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+            color: #856404;
+        }
+        /* Stats */
         .stats-grid { padding: 0 25px 25px 25px; }
         .stat-box {
             background: white;
@@ -109,11 +112,9 @@
             padding: 20px;
             text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: 0.3s;
         }
-        .stat-box:hover { transform: translateY(-5px); }
         .stat-number { font-size: 1.8rem; font-weight: 800; display: block; margin-top: 8px; }
-        /* Table */
+        /* Tables */
         .table-section { padding: 0 25px 25px 25px; }
         .data-table {
             background: white;
@@ -145,8 +146,19 @@
             border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
+            cursor: pointer;
         }
-        /* Footer */
+        .edit-btn:hover { background: #ffc107; }
+        /* Admin Panel */
+        .admin-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 0 25px 25px 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+        }
+        .admin-panel h4 { color: #1b5e20; margin-bottom: 15px; }
         .footer {
             background: #1b5e20;
             padding: 15px 25px;
@@ -179,8 +191,8 @@
             <ul class="nav-menu">
                 <li class="nav-item active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></li>
                 <li class="nav-item" data-page="members"><i class="fas fa-users"></i><span> Members</span></li>
+                <li class="nav-item" data-page="admin"><i class="fas fa-cog"></i><span> Admin Panel</span></li>
                 <li class="nav-item" data-page="reports"><i class="fas fa-chart-line"></i><span> Reports</span></li>
-                <li class="nav-item" data-page="settings"><i class="fas fa-cog"></i><span> Settings</span></li>
             </ul>
             <button class="login-btn" onclick="showLoginModal()"><i class="fas fa-lock"></i> Admin Login</button>
         </div>
@@ -196,73 +208,87 @@
             <p>Loading data...</p>
         </div>
 
-        <!-- Dashboard Page -->
+        <!-- DASHBOARD PAGE (Public - No Login Required) -->
         <div id="dashboard-page" class="page active">
             <div class="summary-section">
                 <div class="summary-card">
-                    <div class="summary-row">
-                        <span class="summary-label"><i class="fas fa-money-bill-wave"></i> Total Amount</span>
-                        <span class="summary-value value-amount" id="totalAmount">৳ 0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label"><i class="fas fa-receipt"></i> Total Expense</span>
-                        <span class="summary-value value-expense" id="totalExpense">৳ 0</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label"><i class="fas fa-calendar"></i> Month</span>
-                        <span class="summary-value value-month" id="monthName">January</span>
-                    </div>
+                    <div class="summary-row"><span class="summary-label"><i class="fas fa-money-bill-wave"></i> Total Amount</span><span class="summary-value value-amount" id="totalAmount">৳ 0</span></div>
+                    <div class="summary-row"><span class="summary-label"><i class="fas fa-receipt"></i> Total Expense</span><span class="summary-value value-expense" id="totalExpense">৳ 0</span></div>
+                    <div class="summary-row"><span class="summary-label"><i class="fas fa-calendar"></i> Month</span><span class="summary-value value-month" id="monthName">January</span></div>
+                    <div class="note-text" id="noteDisplay"><i class="fas fa-sticky-note"></i> Loading note...</div>
                 </div>
             </div>
-
             <div class="stats-grid">
                 <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="stat-box">
-                            <i class="fas fa-utensils fa-2x" style="color:#f57c00"></i>
-                            <span class="stat-number" style="color:#f57c00" id="totalMeals">0</span>
-                            <div>Total Meals</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-box">
-                            <i class="fas fa-users fa-2x" style="color:#0288d1"></i>
-                            <span class="stat-number" style="color:#0288d1" id="totalMembers">0</span>
-                            <div>Total Members</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-box">
-                            <i class="fas fa-chart-pie fa-2x" style="color:#5e35b1"></i>
-                            <span class="stat-number" style="color:#5e35b1" id="avgAmount">৳ 0</span>
-                            <div>Average / Person</div>
-                        </div>
-                    </div>
+                    <div class="col-md-4"><div class="stat-box"><i class="fas fa-utensils fa-2x" style="color:#f57c00"></i><span class="stat-number" style="color:#f57c00" id="totalMeals">0</span><div>Total Meals (Month)</div></div></div>
+                    <div class="col-md-4"><div class="stat-box"><i class="fas fa-users fa-2x" style="color:#0288d1"></i><span class="stat-number" style="color:#0288d1" id="totalMembers">0</span><div>Total Members</div></div></div>
+                    <div class="col-md-4"><div class="stat-box"><i class="fas fa-chart-pie fa-2x" style="color:#5e35b1"></i><span class="stat-number" style="color:#5e35b1" id="avgAmount">৳ 0</span><div>Average / Person</div></div></div>
                 </div>
             </div>
         </div>
 
-        <!-- Members Page -->
+        <!-- MEMBERS PAGE (Public - No Login Required) -->
         <div id="members-page" class="page">
             <div class="table-section">
-                <h4><i class="fas fa-users"></i> All Members Details</h4>
+                <h4><i class="fas fa-users"></i> All Members - Monthly Deposit</h4>
                 <div class="data-table">
                     <table class="table">
-                        <thead><tr><th>Name</th><th>Taka</th><th>Meal</th><th>Hand Cash</th><th id="editHeader" style="display:none">Action</th></tr></thead>
+                        <thead><tr><th>#</th><th>Name</th><th>Monthly Taka</th><th>Status</th></thead>
                         <tbody id="membersTable"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Reports Page -->
-        <div id="reports-page" class="page">
-            <div class="summary-section"><div class="summary-card text-center"><i class="fas fa-chart-line fa-3x text-muted"></i><p>Reports & Analytics Coming Soon...</p></div></div>
+        <!-- ADMIN PANEL (Login Required to Edit) -->
+        <div id="admin-page" class="page">
+            <div class="admin-panel">
+                <h4><i class="fas fa-edit"></i> Admin Control Panel</h4>
+                <p class="text-muted">নিচের তথ্যগুলো এডিট করতে পারবেন (শুধু এডমিন)</p>
+                
+                <div class="alert alert-info" id="adminLoginAlert">
+                    <i class="fas fa-lock"></i> এডিট করতে চাইলে উপরের "Admin Login" বাটনে ক্লিক করুন।
+                </div>
+                
+                <div id="adminControls" style="display: none;">
+                    <!-- Update Expense -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold"><i class="fas fa-receipt"></i> Total Expense</label>
+                        <div class="input-group">
+                            <input type="number" id="expenseInput" class="form-control" placeholder="Enter total expense">
+                            <button class="btn btn-success" onclick="updateExpense()">Update Expense</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Update Note -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold"><i class="fas fa-sticky-note"></i> Note / Announcement</label>
+                        <textarea id="noteInput" class="form-control" rows="3" placeholder="Enter note here..."></textarea>
+                        <button class="btn btn-success mt-2" onclick="updateNote()">Update Note</button>
+                    </div>
+                    
+                    <!-- Update Member Deposits -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold"><i class="fas fa-money-bill-wave"></i> Update Member Monthly Deposit</label>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead><tr><th>Member</th><th>Current Taka</th><th>New Taka</th><th>Action</th></thead>
+                                <tbody id="memberEditList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Settings Page -->
-        <div id="settings-page" class="page">
-            <div class="summary-section"><div class="summary-card text-center"><i class="fas fa-cog fa-3x text-muted"></i><p>Settings Panel Coming Soon...</p></div></div>
+        <!-- REPORTS PAGE (Public) -->
+        <div id="reports-page" class="page">
+            <div class="summary-section">
+                <div class="summary-card text-center">
+                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                    <p>Reports & Analytics Coming Soon...</p>
+                </div>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -285,23 +311,6 @@
                 <input type="password" id="loginPass" class="form-control mb-3" placeholder="Password">
                 <button class="btn btn-success w-100" onclick="doLogin()">Login</button>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-warning"><h5><i class="fas fa-edit"></i> Edit Member</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <input type="hidden" id="editIndex">
-                <label>Name</label><input type="text" id="editName" class="form-control mb-2" readonly>
-                <label>Taka</label><input type="number" id="editTaka" class="form-control mb-2">
-                <label>Meal</label><input type="number" id="editMeal" class="form-control mb-2">
-                <label>Hand Cash</label><input type="number" id="editHandcash" class="form-control mb-2">
-            </div>
-            <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-success" onclick="saveEdit()">Save</button></div>
         </div>
     </div>
 </div>
