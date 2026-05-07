@@ -1,197 +1,171 @@
-// CHANGE THIS TO YOUR APPS SCRIPT URL
-const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAarw1kAdGrfBT8PUyCOyhoc06NekPVUx89bdpYCDNKae8Z0U9vuWi7x1xQYn7AZRKqA/exec";
+// Web App URL
+const webAppUrl = "https://script.google.com/macros/s/AKfycbyXcWwEeyMIHXjz7ELRl-pAJSWgUnIp3QIrYzpDdSSPRp4uK61Zh5BgvdP3Rrx5ouPRUg/exec";
 
 let membersData = [];
 let isAdmin = false;
-let summaryData = {};
+let currentEditIndex = null;
 
-$(document).ready(function() {
-    $('.nav-item').click(function() {
-        const page = $(this).data('page');
-        $('.nav-item').removeClass('active');
-        $(this).addClass('active');
-        $('.page').removeClass('active');
-        $(`#${page}-page`).addClass('active');
+// Navigation
+document.querySelectorAll('.nav-link-custom').forEach(link => {
+    link.addEventListener('click', function() {
+        const pageId = this.getAttribute('data-page');
+        document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+        document.getElementById(`${pageId}-page`).classList.add('active-page');
     });
-    
-    loadData();
-    setInterval(loadData, 30000);
 });
 
-async function loadData() {
-    try {
-        $('#loader').show();
+function openLoginModal() {
+    document.getElementById('adminUsername').value = '';
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('loginError').classList.add('d-none');
+    const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+    modal.show();
+}
+
+function verifyLogin() {
+    const username = document.getElementById('adminUsername').value;
+    const password = document.getElementById('adminPassword').value;
+    
+    // CHANGE YOUR USERNAME AND PASSWORD HERE
+    if (username === 'admin' && password === 'admin123') {
+        isAdmin = true;
+        bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
         
-        const response = await fetch(`${APP_SCRIPT_URL}?t=${Date.now()}`, {
-            cache: 'no-store',
-            headers: { 'Cache-Control': 'no-cache' }
-        });
+        const loginBtn = document.querySelector('.login-btn');
+        loginBtn.innerHTML = '<i class="fas fa-user-check me-2"></i>Admin Mode';
+        loginBtn.classList.add('admin-mode');
         
-        const data = await response.json();
+        document.getElementById('edit-col-header').style.display = 'table-cell';
+        renderMembersTable();
         
-        if (!data.success) {
-            throw new Error(data.error || "Unknown error");
-        }
-        
-        membersData = data.members || [];
-        summaryData = data;
-        
-        // Calculate totals
-        const totalAmount = membersData.reduce((sum, m) => sum + (Number(m.taka) || 0), 0);
-        const totalMembers = membersData.length;
-        const avgAmount = totalMembers > 0 ? totalAmount / totalMembers : 0;
-        const totalExpense = Number(data.totalExpense) || 0;
-        const month = data.month || 'January';
-        
-        // Update UI
-        $('#totalAmount').text(`৳ ${totalAmount.toFixed(2)}`);
-        $('#totalExpense').text(`৳ ${totalExpense.toFixed(2)}`);
-        $('#monthName').text(month);
-        $('#totalMembers').text(totalMembers);
-        $('#avgAmount').text(`৳ ${avgAmount.toFixed(2)}`);
-        $('#footerAmount').text(`৳ ${totalAmount.toFixed(2)}`);
-        $('#footerExpense').text(`৳ ${totalExpense.toFixed(2)}`);
-        $('#footerMonth').text(month);
-        
-        // Update note
-        if (data.note && data.note !== "") {
-            $('#noteDisplay').html(`<i class="fas fa-sticky-note"></i> ${data.note}`);
-        } else {
-            $('#noteDisplay').html(`<i class="fas fa-sticky-note"></i> No notes. Login as admin to add.`);
-        }
-        
-        // Render members table
-        const tbody = $('#membersTable');
-        tbody.empty();
-        membersData.forEach((member, idx) => {
-            tbody.append(`<tr>
-                <td>${idx + 1}</td>
-                <td><i class="fas fa-user-circle"></i> ${member.name}</td>
-                <td><span class="badge-taka">৳ ${Number(member.taka).toFixed(2)}</span></td>
-            </tr>`);
-        });
-        
-        // Update admin panel if logged in
-        if (isAdmin) {
-            loadMemberEditList();
-            $('#expenseInput').val(totalExpense);
-            $('#noteInput').val(data.note || '');
-        }
-        
-        $('#loader').hide();
-        
-    } catch(error) {
-        console.error(error);
-        $('#loader').html(`<div class="alert alert-danger m-3">Error: ${error.message}<br><br>Check: Apps Script URL correct? Deployed with "Anyone" access?</div>`);
+        alert('✅ Admin login successful!');
+    } else {
+        document.getElementById('loginError').textContent = '❌ Invalid username or password!';
+        document.getElementById('loginError').classList.remove('d-none');
     }
 }
 
-function loadMemberEditList() {
-    const container = $('#memberEditList');
-    container.empty();
+function editMember(index) {
+    if (!isAdmin) {
+        alert('Please login as admin first!');
+        return;
+    }
     
-    membersData.forEach((member, idx) => {
-        container.append(`
-            <div class="member-edit-item">
-                <div><strong>${member.name}</strong><br><small>Current: ৳ ${Number(member.taka).toFixed(2)}</small></div>
-                <div>
-                    <input type="number" id="editTaka_${idx}" value="${member.taka}" class="form-control" style="width: 150px; display: inline-block;">
-                    <button class="btn btn-warning btn-sm" onclick="updateMemberTaka(${idx})">Update</button>
-                </div>
-            </div>
-        `);
+    const member = membersData[index];
+    currentEditIndex = index;
+    
+    document.getElementById('editName').value = member.name;
+    document.getElementById('editTaka').value = member.taka;
+    document.getElementById('editMeal').value = member.meal;
+    document.getElementById('editHandcash').value = member.handcash;
+    
+    const modal = new bootstrap.Modal(document.getElementById('editModal'));
+    modal.show();
+}
+
+async function saveMemberData() {
+    const updatedMember = {
+        name: document.getElementById('editName').value,
+        taka: parseFloat(document.getElementById('editTaka').value) || 0,
+        meal: parseInt(document.getElementById('editMeal').value) || 0,
+        handcash: parseFloat(document.getElementById('editHandcash').value) || 0
+    };
+    
+    membersData[currentEditIndex] = updatedMember;
+    await updateGoogleSheet();
+    renderMembersTable();
+    updateDashboardStats();
+    
+    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+    alert('✅ Data updated successfully!');
+}
+
+async function updateGoogleSheet() {
+    try {
+        await fetch(webAppUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ members: membersData, action: 'update' })
+        });
+        console.log('Update sent');
+    } catch (error) {
+        console.error('Update error:', error);
+    }
+}
+
+function renderMembersTable() {
+    const listBody = document.getElementById('member-list');
+    listBody.innerHTML = '';
+    
+    membersData.forEach((member, index) => {
+        const mealText = member.meal === 1 ? 'Meal' : 'Meals';
+        const editButton = isAdmin ? 
+            `<td><button class="edit-btn" onclick="editMember(${index})"><i class="fas fa-edit"></i> Edit</button></td>` : '';
+        
+        const row = `
+            <tr>
+                <td><i class="fas fa-user-circle me-2"></i>${member.name}</td>
+                <td><span class="badge-taka">৳ ${(member.taka || 0).toFixed(2)}</span></td>
+                <td><span class="badge-meal">${member.meal || 0} ${mealText}</span></td>
+                <td><span class="badge-handcash">৳ ${(member.handcash || 0).toFixed(2)}</span></td>
+                ${editButton}
+            </tr>
+        `;
+        listBody.innerHTML += row;
     });
 }
 
-async function updateMemberTaka(index) {
-    if (!isAdmin) {
-        alert('Please login as admin first!');
-        return;
+function updateDashboardStats() {
+    const totalMeals = membersData.reduce((sum, m) => sum + (Number(m.meal) || 0), 0);
+    const totalMembers = membersData.length;
+    const totalAmount = membersData.reduce((sum, m) => sum + (Number(m.taka) || 0), 0);
+    const avgAmount = totalMembers > 0 ? totalAmount / totalMembers : 0;
+    
+    let totalExpense = 0;
+    if (window.summaryData && window.summaryData.totalExpense) {
+        totalExpense = Number(window.summaryData.totalExpense);
     }
     
-    const newTaka = parseFloat($(`#editTaka_${index}`).val()) || 0;
+    document.getElementById('total-amt-display').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
+    document.getElementById('total-exp-display').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
+    document.getElementById('month-display').innerHTML = window.summaryData?.month || 'January';
     
+    document.getElementById('total-meals').innerText = totalMeals;
+    document.getElementById('total-members').innerText = totalMembers;
+    document.getElementById('avg-amount').innerHTML = `৳ ${avgAmount.toFixed(2)}`;
+    
+    document.getElementById('footer-total').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
+    document.getElementById('footer-expense').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
+    document.getElementById('footer-month').innerText = window.summaryData?.month || 'January';
+}
+
+async function fetchData() {
     try {
-        await fetch(APP_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: 'updateMember', index: index, taka: newTaka })
-        });
-        alert('✅ Member deposit updated successfully!');
-        loadData();
-    } catch(e) {
-        alert('Error: ' + e.message);
+        document.getElementById('loader').style.display = 'block';
+        
+        const response = await fetch(webAppUrl);
+        const data = await response.json();
+        
+        if (data.error) throw new Error(data.error);
+        
+        membersData = data.members || [];
+        window.summaryData = data.summary || {};
+        
+        updateDashboardStats();
+        renderMembersTable();
+        
+        document.getElementById('loader').style.display = 'none';
+        
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById('loader').innerHTML = `<div class="alert alert-danger m-4">Error: ${error.message}</div>`;
     }
 }
 
-async function updateExpense() {
-    if (!isAdmin) {
-        alert('Please login as admin first!');
-        return;
-    }
-    
-    const expense = parseFloat($('#expenseInput').val());
-    if (isNaN(expense)) {
-        alert('Please enter a valid expense amount');
-        return;
-    }
-    
-    try {
-        await fetch(APP_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: 'updateExpense', expense: expense })
-        });
-        alert('✅ Total expense updated successfully!');
-        loadData();
-    } catch(e) {
-        alert('Error: ' + e.message);
-    }
-}
-
-async function updateNote() {
-    if (!isAdmin) {
-        alert('Please login as admin first!');
-        return;
-    }
-    
-    const note = $('#noteInput').val();
-    
-    try {
-        await fetch(APP_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: 'updateNote', note: note })
-        });
-        alert('✅ Note updated successfully!');
-        loadData();
-    } catch(e) {
-        alert('Error: ' + e.message);
-    }
-}
-
-function showLoginModal() {
-    $('#loginUser').val('');
-    $('#loginPass').val('');
-    $('#loginError').addClass('d-none');
-    new bootstrap.Modal(document.getElementById('loginModal')).show();
-}
-
-function doLogin() {
-    const user = $('#loginUser').val();
-    const pass = $('#loginPass').val();
-    
-    if (user === 'admin' && pass === 'admin123') {
-        isAdmin = true;
-        bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-        $('.login-btn').html('<i class="fas fa-user-check"></i> Admin Mode').addClass('admin-mode');
-        $('#adminLoginAlert').hide();
-        $('#adminControls').show();
-        loadMemberEditList();
-        $('#expenseInput').val(summaryData.totalExpense || '');
-        $('#noteInput').val(summaryData.note || '');
-        alert('✅ Admin login successful! Now you can edit data.');
-    } else {
-        $('#loginError').removeClass('d-none').text('❌ Invalid username or password!');
-    }
-}
+window.onload = () => {
+    fetchData();
+    setInterval(fetchData, 30000);
+};
