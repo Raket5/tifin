@@ -1,5 +1,5 @@
 // Web App URL - Apnar current URL ta ekhane boshan
-const webAppUrl = "https://script.google.com/macros/s/AKfycbwntnu9vdBK-32hpg0FDSKq1s4GnD5sNHWwEObxUQYtard9N1w20Y7jZo-59sZsiLGh5A/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbw5x8q85xgNsFJbyXEAA1s8JYJ-TBpdt4Dga8tvN-5WC-Z30mwIU6BqpTC3HkD9y7A8/exec";
 
 let membersData = [];
 let isAdmin = false;
