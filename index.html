@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BN 26</title>
+    <title>BN Tiffin Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -18,443 +18,355 @@
 
         body {
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
             padding: 20px;
         }
 
-        .dashboard-container {
-            max-width: 1400px;
+        .container-custom {
+            max-width: 1300px;
             margin: 0 auto;
         }
 
-        .modern-card {
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
-        .nav-wrapper {
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-            padding: 0 30px;
+        /* Navigation */
+        .nav-bar {
+            background: #1b5e20;
+            padding: 0 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
 
-        .custom-nav {
+        .nav-menu {
             display: flex;
             gap: 5px;
+            list-style: none;
             margin: 0;
             padding: 0;
-            list-style: none;
         }
 
-        .nav-link-custom {
+        .nav-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 18px 24px;
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            gap: 8px;
+            padding: 15px 20px;
+            color: rgba(255,255,255,0.9);
             cursor: pointer;
-            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
         }
 
-        .nav-link-custom:hover {
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
             color: white;
-            background: rgba(255, 255, 255, 0.1);
         }
 
-        .nav-link-custom.active {
+        .nav-item.active {
+            background: rgba(255,255,255,0.15);
             color: white;
-            border-bottom-color: #ffd700;
-            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid #ffd700;
         }
 
-        .login-btn {
+        .login-button {
             background: #ffd700;
             color: #1b5e20;
             border: none;
-            padding: 8px 22px;
+            padding: 8px 20px;
             border-radius: 8px;
             font-weight: 600;
-            transition: all 0.3s ease;
             cursor: pointer;
         }
 
-        .login-btn:hover {
-            background: #ffed4a;
-            transform: translateY(-2px);
-        }
-
-        .login-btn.admin-mode {
+        .login-button.admin-mode {
             background: #4caf50;
             color: white;
         }
 
-        .header-gradient {
-            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-            padding: 35px 30px;
-            text-align: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .header-gradient h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin: 0;
-            background: linear-gradient(135deg, #1b5e20, #2e7d32);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .summary-table-container {
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
             padding: 30px;
-            background: #fafafa;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
         }
 
-        .summary-table-wrapper {
+        .header h1 {
+            color: #1b5e20;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Summary Cards */
+        .summary-section {
+            padding: 25px;
+            background: #f5f5f5;
+        }
+
+        .summary-card {
             background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(46, 125, 50, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .summary-title {
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-            color: white;
-            padding: 14px 24px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 0;
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
         }
 
-        .summary-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .summary-table td {
-            padding: 18px 24px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .summary-table tr:last-child td {
+        .summary-row:last-child {
             border-bottom: none;
         }
 
-        .summary-table .label {
+        .summary-label {
             font-weight: 600;
-            color: #2c3e2f;
-            font-size: 1rem;
-            width: 40%;
+            color: #555;
         }
 
-        .summary-table .value {
+        .summary-value {
             font-weight: 700;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
 
-        .summary-table .value.total {
-            color: #2e7d32;
-        }
+        .value-amount { color: #2e7d32; }
+        .value-expense { color: #d32f2f; }
+        .value-month { color: #f57c00; }
 
-        .summary-table .value.expense {
-            color: #d32f2f;
-        }
-
-        .summary-table .value.month {
-            color: #f57c00;
-        }
-
-        .summary-table i {
-            width: 32px;
-            margin-right: 12px;
-            font-size: 1.1rem;
-        }
-
+        /* Stats Grid */
         .stats-grid {
-            padding: 0 30px 30px 30px;
+            padding: 0 25px 25px 25px;
         }
 
-        .stats-card {
+        .stat-box {
             background: white;
-            border-radius: 20px;
-            padding: 22px;
+            border-radius: 15px;
+            padding: 20px;
             text-align: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(46, 125, 50, 0.15);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .stats-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.12);
-        }
-
-        .stats-card i {
-            font-size: 2rem;
-            margin-bottom: 12px;
-        }
-
-        .stats-card .stats-value {
+        .stat-number {
             font-size: 1.8rem;
             font-weight: 800;
             display: block;
             margin-top: 8px;
         }
 
-        .stats-card .stats-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-            color: #6c757d;
+        /* Table */
+        .table-section {
+            padding: 0 25px 25px 25px;
         }
 
-        .text-meal { color: #f57c00; }
-        .text-members { color: #0288d1; }
-        .text-avg { color: #5e35b1; }
-
-        .table-container {
-            padding: 0 30px 30px 30px;
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #1b5e20;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .custom-table {
+        .data-table {
+            width: 100%;
             background: white;
-            border-radius: 20px;
+            border-radius: 15px;
             overflow-x: auto;
-            border: 1px solid rgba(46, 125, 50, 0.1);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
-        .custom-table thead {
-            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #e8f5e9;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
             color: #1b5e20;
         }
 
-        .custom-table thead th {
-            padding: 14px 16px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid rgba(46, 125, 50, 0.2);
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
         }
 
-        .custom-table tbody tr {
-            border-bottom: 1px solid #f0f0f0;
-            transition: all 0.2s ease;
-        }
-
-        .custom-table tbody tr:hover {
+        .data-table tr:hover {
             background: #f1f8e9;
         }
 
-        .custom-table tbody td {
-            padding: 14px 16px;
-            vertical-align: middle;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #2c3e2f;
-        }
-
-        .badge-taka {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            color: #1b5e20;
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-weight: 700;
+        .badge {
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 600;
             display: inline-block;
         }
 
-        .badge-meal {
-            background: #fff3e0;
-            color: #f57c00;
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-weight: 700;
-            display: inline-block;
+        .badge-taka { background: #e8f5e9; color: #2e7d32; }
+        .badge-meal { background: #fff3e0; color: #f57c00; }
+        .badge-cash { background: #e3f2fd; color: #1565c0; }
+
+        .edit-btn {
+            background: #ffd700;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
         }
 
-        .badge-handcash {
-            background: linear-gradient(135deg, #e3f2fd, #bbdef5);
-            color: #1565c0;
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-weight: 700;
-            display: inline-block;
+        /* Footer */
+        .footer {
+            background: #1b5e20;
+            padding: 15px 25px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .footer-item {
+            background: rgba(255,255,255,0.15);
+            padding: 5px 15px;
+            border-radius: 20px;
         }
 
         .page {
             display: none;
         }
 
-        .page.active-page {
+        .page.active {
             display: block;
-            animation: fadeIn 0.4s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .footer-summary {
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-            padding: 16px 30px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .footer-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.12);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-        }
-
-        .footer-item strong {
-            font-weight: 700;
-            color: #ffd700;
-        }
-
-        .loader-wrapper {
-            padding: 60px;
+        .loader {
             text-align: center;
-        }
-
-        .edit-btn {
-            background: #ffd700;
-            color: #1b5e20;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
-
-        .edit-btn:hover {
-            background: #ffed4a;
-            transform: scale(1.02);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-            color: white;
-            border-bottom: none;
-        }
-
-        .modal-header .btn-close {
-            filter: brightness(0) invert(1);
+            padding: 50px;
         }
 
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .nav-wrapper { flex-direction: column; padding: 10px; }
-            .custom-nav { flex-wrap: wrap; justify-content: center; }
-            .nav-link-custom span { display: none; }
-            .nav-link-custom { padding: 12px 16px; }
-            .summary-table .value { font-size: 1rem; }
-            .summary-table td { padding: 12px 16px; }
-            .table-container { padding: 0 15px 15px 15px; overflow-x: auto; }
-            .stats-card .stats-value { font-size: 1.3rem; }
-            .footer-summary { flex-direction: column; align-items: center; }
+            .nav-bar { flex-direction: column; padding: 10px; }
+            .nav-menu { flex-wrap: wrap; justify-content: center; }
+            .nav-item span { display: none; }
+            .footer { flex-direction: column; text-align: center; }
+            .table-section { overflow-x: auto; }
         }
     </style>
 </head>
 <body>
-
-<div class="dashboard-container">
-    <div class="modern-card">
-        <div class="nav-wrapper">
-            <ul class="custom-nav">
-                <li><div class="nav-link-custom active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></div></li>
-                <li><div class="nav-link-custom" data-page="members"><i class="fas fa-users"></i><span> Members</span></div></li>
-                <li><div class="nav-link-custom" data-page="reports"><i class="fas fa-chart-line"></i><span> Reports</span></div></li>
-                <li><div class="nav-link-custom" data-page="settings"><i class="fas fa-cog"></i><span> Settings</span></div></li>
+<div class="container-custom">
+    <div class="main-card">
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></li>
+                <li class="nav-item" data-page="members"><i class="fas fa-users"></i><span> Members</span></li>
+                <li class="nav-item" data-page="reports"><i class="fas fa-chart-line"></i><span> Reports</span></li>
+                <li class="nav-item" data-page="settings"><i class="fas fa-cog"></i><span> Settings</span></li>
             </ul>
-            <button class="login-btn" onclick="openLoginModal()"><i class="fas fa-lock me-2"></i>Admin Login</button>
+            <button class="login-button" onclick="showLoginModal()"><i class="fas fa-lock"></i> Admin Login</button>
         </div>
 
-        <div class="header-gradient">
-            <h1><i class="fas fa-utensils me-2"></i>BN Tiffin Management</h1>
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-utensils"></i> BN Tiffin Management</h1>
         </div>
 
-        <div id="loader" class="loader-wrapper">
-            <div class="spinner-border text-success" role="status"></div>
-            <p class="mt-3 text-muted">Loading tiffin data...</p>
+        <!-- Loader -->
+        <div id="loader" class="loader">
+            <div class="spinner-border text-success"></div>
+            <p>Loading data...</p>
         </div>
 
-        <div id="dashboard-page" class="page active-page">
-            <div class="summary-table-container">
-                <div class="summary-table-wrapper">
-                    <div class="summary-title"><i class="fas fa-chart-line me-2"></i> Financial Summary</div>
-                    <table class="summary-table">
-                        <tr><td class="label"><i class="fas fa-money-bill-wave"></i> Total Amount</td><td class="value total" id="total-amt-display">৳ 0.00</td></tr>
-                        <tr><td class="label"><i class="fas fa-receipt"></i> Total Expense</td><td class="value expense" id="total-exp-display">৳ 0.00</td></tr>
-                        <tr><td class="label"><i class="fas fa-calendar-alt"></i> Month</td><td class="value month" id="month-display">January</td></tr>
-                    </table>
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page active">
+            <div class="summary-section">
+                <div class="summary-card">
+                    <div class="summary-row">
+                        <span class="summary-label"><i class="fas fa-money-bill-wave"></i> Total Amount</span>
+                        <span class="summary-value value-amount" id="totalAmount">৳ 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label"><i class="fas fa-receipt"></i> Total Expense</span>
+                        <span class="summary-value value-expense" id="totalExpense">৳ 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label"><i class="fas fa-calendar"></i> Month</span>
+                        <span class="summary-value value-month" id="monthName">January</span>
+                    </div>
                 </div>
             </div>
 
             <div class="stats-grid">
                 <div class="row g-3">
-                    <div class="col-md-4"><div class="stats-card"><i class="fas fa-utensils text-meal"></i><div class="stats-value text-meal" id="total-meals">0</div><div class="stats-label">Total Meals</div></div></div>
-                    <div class="col-md-4"><div class="stats-card"><i class="fas fa-users text-members"></i><div class="stats-value text-members" id="total-members">0</div><div class="stats-label">Total Members</div></div></div>
-                    <div class="col-md-4"><div class="stats-card"><i class="fas fa-chart-pie text-avg"></i><div class="stats-value text-avg" id="avg-amount">৳ 0</div><div class="stats-label">Average / Person</div></div></div>
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <i class="fas fa-utensils fa-2x" style="color:#f57c00"></i>
+                            <span class="stat-number" style="color:#f57c00" id="totalMeals">0</span>
+                            <div>Total Meals</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <i class="fas fa-users fa-2x" style="color:#0288d1"></i>
+                            <span class="stat-number" style="color:#0288d1" id="totalMembers">0</span>
+                            <div>Total Members</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <i class="fas fa-chart-pie fa-2x" style="color:#5e35b1"></i>
+                            <span class="stat-number" style="color:#5e35b1" id="avgAmount">৳ 0</span>
+                            <div>Average / Person</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- Members Page -->
         <div id="members-page" class="page">
-            <div class="table-container">
-                <div class="section-title"><i class="fas fa-users"></i><span>All Members Details</span></div>
-                <div class="custom-table">
-                    <table class="table mb-0">
-                        <thead><tr><th><i class="fas fa-user me-1"></i> Name</th><th><i class="fas fa-money-bill me-1"></i> Taka</th><th><i class="fas fa-utensils me-1"></i> Meal</th><th><i class="fas fa-hand-holding-usd me-1"></i> Hand Cash</th><th id="edit-col-header" style="display:none;"><i class="fas fa-edit me-1"></i> Action</th></tr></thead>
-                        <tbody id="member-list"></tbody>
+            <div class="table-section">
+                <h4 class="mb-3"><i class="fas fa-users"></i> All Members Details</h4>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr><th>Name</th><th>Taka</th><th>Meal</th><th>Hand Cash</th><th id="editHeader" style="display:none">Action</th></tr>
+                        </thead>
+                        <tbody id="membersTable"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
+        <!-- Reports Page -->
         <div id="reports-page" class="page">
-            <div class="summary-table-container"><div class="summary-table-wrapper"><div class="summary-title"><i class="fas fa-chart-line me-2"></i> Reports & Analytics</div><div style="padding: 50px; text-align: center;"><i class="fas fa-chart-line fa-3x text-muted mb-3" style="color: #c8e6c9;"></i><p class="text-muted">Monthly reports and analytics coming soon...</p></div></div></div>
+            <div class="summary-section">
+                <div class="summary-card text-center">
+                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                    <p>Reports & Analytics Coming Soon...</p>
+                </div>
+            </div>
         </div>
 
+        <!-- Settings Page -->
         <div id="settings-page" class="page">
-            <div class="summary-table-container"><div class="summary-table-wrapper"><div class="summary-title"><i class="fas fa-cog me-2"></i> Settings Panel</div><div style="padding: 50px; text-align: center;"><i class="fas fa-cog fa-3x text-muted mb-3" style="color: #c8e6c9;"></i><p class="text-muted">Settings and configuration coming soon...</p></div></div></div>
+            <div class="summary-section">
+                <div class="summary-card text-center">
+                    <i class="fas fa-cog fa-3x text-muted mb-3"></i>
+                    <p>Settings Panel Coming Soon...</p>
+                </div>
+            </div>
         </div>
 
-        <div class="footer-summary">
-            <div class="footer-item"><i class="fas fa-chart-line"></i> Total Collection: <strong id="footer-total">৳ 0</strong></div>
-            <div class="footer-item"><i class="fas fa-chart-bar"></i> Total Expense: <strong id="footer-expense">৳ 0</strong></div>
-            <div class="footer-item"><i class="fas fa-calendar"></i> Month: <strong id="footer-month">N/A</strong></div>
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-item"><i class="fas fa-chart-line"></i> Collection: <strong id="footerAmount">৳ 0</strong></div>
+            <div class="footer-item"><i class="fas fa-chart-bar"></i> Expense: <strong id="footerExpense">৳ 0</strong></div>
+            <div class="footer-item"><i class="fas fa-calendar"></i> Month: <strong id="footerMonth">N/A</strong></div>
         </div>
     </div>
 </div>
@@ -463,12 +375,15 @@
 <div class="modal fade" id="loginModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title"><i class="fas fa-lock me-2"></i>Admin Login</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-lock"></i> Admin Login</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
             <div class="modal-body">
                 <div id="loginError" class="alert alert-danger d-none"></div>
-                <div class="mb-3"><label class="form-label">Username</label><input type="text" id="adminUsername" class="form-control" placeholder="Enter username"></div>
-                <div class="mb-3"><label class="form-label">Password</label><input type="password" id="adminPassword" class="form-control" placeholder="Enter password"></div>
-                <button class="btn btn-success w-100" onclick="verifyLogin()"><i class="fas fa-sign-in-alt me-2"></i>Login</button>
+                <input type="text" id="loginUser" class="form-control mb-3" placeholder="Username">
+                <input type="password" id="loginPass" class="form-control mb-3" placeholder="Password">
+                <button class="btn btn-success w-100" onclick="doLogin()">Login</button>
             </div>
         </div>
     </div>
@@ -478,18 +393,30 @@
 <div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Member Data</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <div class="mb-3"><label class="form-label">Member Name</label><input type="text" id="editName" class="form-control" readonly></div>
-                <div class="mb-3"><label class="form-label">Taka (Deposit)</label><input type="number" id="editTaka" class="form-control" step="0.01"></div>
-                <div class="mb-3"><label class="form-label">Meal Count</label><input type="number" id="editMeal" class="form-control"></div>
-                <div class="mb-3"><label class="form-label">Hand Cash</label><input type="number" id="editHandcash" class="form-control" step="0.01"></div>
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title"><i class="fas fa-edit"></i> Edit Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-success" onclick="saveMemberData()">Save Changes</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="editIndex">
+                <label>Name</label>
+                <input type="text" id="editName" class="form-control mb-3" readonly>
+                <label>Taka</label>
+                <input type="number" id="editTaka" class="form-control mb-3">
+                <label>Meal</label>
+                <input type="number" id="editMeal" class="form-control mb-3">
+                <label>Hand Cash</label>
+                <input type="number" id="editHandcash" class="form-control mb-3">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success" onclick="saveEdit()">Save</button>
+            </div>
         </div>
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="script.js"></script>
 </body>
