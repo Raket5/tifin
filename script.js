@@ -16,7 +16,6 @@ document.querySelectorAll('.nav-link-custom').forEach(link => {
     });
 });
 
-// Open Login Modal
 function openLoginModal() {
     document.getElementById('adminUsername').value = '';
     document.getElementById('adminPassword').value = '';
@@ -25,16 +24,11 @@ function openLoginModal() {
     modal.show();
 }
 
-// Verify Login (You can set your own username/password here)
 function verifyLogin() {
     const username = document.getElementById('adminUsername').value;
     const password = document.getElementById('adminPassword').value;
     
-    // ==============================================
-    // SET YOUR USERNAME AND PASSWORD HERE
-    // Example: if (username === 'admin' && password === 'yourpassword')
-    // ==============================================
-    
+    // CHANGE YOUR USERNAME AND PASSWORD HERE
     if (username === 'admin' && password === 'admin123') {
         isAdmin = true;
         bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
@@ -43,20 +37,16 @@ function verifyLogin() {
         loginBtn.innerHTML = '<i class="fas fa-user-check me-2"></i>Admin Mode';
         loginBtn.classList.add('admin-mode');
         
-        // Show edit column
         document.getElementById('edit-col-header').style.display = 'table-cell';
-        
-        // Refresh table with edit buttons
         renderMembersTable();
         
-        alert('✅ Admin login successful! You can now edit data by clicking Edit buttons.');
+        alert('✅ Admin login successful! You can now edit data.');
     } else {
         document.getElementById('loginError').textContent = '❌ Invalid username or password!';
         document.getElementById('loginError').classList.remove('d-none');
     }
 }
 
-// Edit Member
 function editMember(index) {
     if (!isAdmin) {
         alert('Please login as admin first!');
@@ -75,7 +65,6 @@ function editMember(index) {
     modal.show();
 }
 
-// Save Member Data
 async function saveMemberData() {
     const updatedMember = {
         name: document.getElementById('editName').value,
@@ -84,13 +73,8 @@ async function saveMemberData() {
         handcash: parseFloat(document.getElementById('editHandcash').value) || 0
     };
     
-    // Update local data
     membersData[currentEditIndex] = updatedMember;
-    
-    // Send to Google Sheet
     await updateGoogleSheet();
-    
-    // Refresh UI
     renderMembersTable();
     updateDashboardStats();
     
@@ -98,10 +82,9 @@ async function saveMemberData() {
     alert('✅ Data updated successfully!');
 }
 
-// Update Google Sheet
 async function updateGoogleSheet() {
     try {
-        const response = await fetch(webAppUrl, {
+        await fetch(webAppUrl, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
@@ -110,11 +93,9 @@ async function updateGoogleSheet() {
         console.log('Update sent to Google Sheet');
     } catch (error) {
         console.error('Update error:', error);
-        alert('⚠️ Error updating Google Sheet. Please check console.');
     }
 }
 
-// Render Members Table
 function renderMembersTable() {
     const listBody = document.getElementById('member-list');
     listBody.innerHTML = '';
@@ -122,8 +103,7 @@ function renderMembersTable() {
     membersData.forEach((member, index) => {
         const mealText = member.meal === 1 ? 'Meal' : 'Meals';
         const editButton = isAdmin ? 
-            `<td><button class="edit-btn" onclick="editMember(${index})"><i class="fas fa-edit"></i> Edit</button></td>` : 
-            '';
+            `<td><button class="edit-btn" onclick="editMember(${index})"><i class="fas fa-edit"></i> Edit</button></td>` : '';
         
         const row = `
             <tr>
@@ -138,13 +118,17 @@ function renderMembersTable() {
     });
 }
 
-// Update Dashboard Stats
 function updateDashboardStats() {
     const totalMeals = membersData.reduce((sum, m) => sum + (Number(m.meal) || 0), 0);
     const totalMembers = membersData.length;
     const totalAmount = membersData.reduce((sum, m) => sum + (Number(m.taka) || 0), 0);
-    const totalExpense = 0; // Will come from sheet
     const avgAmount = totalMembers > 0 ? totalAmount / totalMembers : 0;
+    
+    // Get expense from summary (if available)
+    let totalExpense = 0;
+    if (window.summaryData && window.summaryData.totalExpense) {
+        totalExpense = Number(window.summaryData.totalExpense);
+    }
     
     document.getElementById('total-amt').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
     document.getElementById('total-meals').innerText = totalMeals;
@@ -153,7 +137,6 @@ function updateDashboardStats() {
     document.getElementById('footer-total').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
 }
 
-// Fetch Data from Google Sheet
 async function fetchData() {
     try {
         document.getElementById('loader').style.display = 'block';
@@ -164,11 +147,16 @@ async function fetchData() {
         if (data.error) throw new Error(data.error);
         
         membersData = data.members || [];
+        window.summaryData = data.summary || {};
         
-        document.getElementById('month-text').innerText = data.summary?.month || 'January';
-        document.getElementById('footer-month').innerText = data.summary?.month || 'January';
-        document.getElementById('total-exp').innerHTML = `৳ ${(Number(data.summary?.totalExpense) || 0).toFixed(2)}`;
-        document.getElementById('footer-expense').innerHTML = `৳ ${(Number(data.summary?.totalExpense) || 0).toFixed(2)}`;
+        const month = window.summaryData.month || 'January';
+        const totalExpense = Number(window.summaryData.totalExpense) || 0;
+        
+        document.getElementById('month-text').innerText = month;
+        document.getElementById('month-display').innerHTML = `<i class="fas fa-calendar-alt me-2"></i>${month}`;
+        document.getElementById('footer-month').innerText = month;
+        document.getElementById('total-exp').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
+        document.getElementById('footer-expense').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
         
         renderMembersTable();
         updateDashboardStats();
@@ -181,7 +169,6 @@ async function fetchData() {
     }
 }
 
-// Auto refresh every 30 seconds
 window.onload = () => {
     fetchData();
     setInterval(fetchData, 30000);
