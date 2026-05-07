@@ -1,171 +1,101 @@
-// Web App URL
-const webAppUrl = "https://script.google.com/macros/s/AKfycbyXcWwEeyMIHXjz7ELRl-pAJSWgUnIp3QIrYzpDdSSPRp4uK61Zh5BgvdP3Rrx5ouPRUg/exec";
+// === CHANGE THIS TO YOUR URL ===
+const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0MrHvgPTaYGh8v8lyt_dPbalgN5qdj8yZrb7duQRvHRqDIpspYxa367PH2jfHlthz0Q/exec";
 
 let membersData = [];
 let isAdmin = false;
-let currentEditIndex = null;
+let summaryData = {};
 
-// Navigation
-document.querySelectorAll('.nav-link-custom').forEach(link => {
-    link.addEventListener('click', function() {
-        const pageId = this.getAttribute('data-page');
-        document.querySelectorAll('.nav-link-custom').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
-        document.getElementById(`${pageId}-page`).classList.add('active-page');
+$(document).ready(function() {
+    $('.nav-link-custom').click(function() {
+        $('.nav-link-custom').removeClass('active');
+        $(this).addClass('active');
+        
+        const page = $(this).data('page');
+        $('.page').removeClass('active-page');
+        $(`#${page}-page`).addClass('active-page');
     });
+
+    loadData();
+    setInterval(loadData, 30000); // Auto refresh every 30 sec
 });
 
-function openLoginModal() {
-    document.getElementById('adminUsername').value = '';
-    document.getElementById('adminPassword').value = '';
-    document.getElementById('loginError').classList.add('d-none');
-    const modal = new bootstrap.Modal(document.getElementById('loginModal'));
-    modal.show();
-}
-
-function verifyLogin() {
-    const username = document.getElementById('adminUsername').value;
-    const password = document.getElementById('adminPassword').value;
-    
-    // CHANGE YOUR USERNAME AND PASSWORD HERE
-    if (username === 'admin' && password === 'admin123') {
-        isAdmin = true;
-        bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-        
-        const loginBtn = document.querySelector('.login-btn');
-        loginBtn.innerHTML = '<i class="fas fa-user-check me-2"></i>Admin Mode';
-        loginBtn.classList.add('admin-mode');
-        
-        document.getElementById('edit-col-header').style.display = 'table-cell';
-        renderMembersTable();
-        
-        alert('✅ Admin login successful!');
-    } else {
-        document.getElementById('loginError').textContent = '❌ Invalid username or password!';
-        document.getElementById('loginError').classList.remove('d-none');
-    }
-}
-
-function editMember(index) {
-    if (!isAdmin) {
-        alert('Please login as admin first!');
-        return;
-    }
-    
-    const member = membersData[index];
-    currentEditIndex = index;
-    
-    document.getElementById('editName').value = member.name;
-    document.getElementById('editTaka').value = member.taka;
-    document.getElementById('editMeal').value = member.meal;
-    document.getElementById('editHandcash').value = member.handcash;
-    
-    const modal = new bootstrap.Modal(document.getElementById('editModal'));
-    modal.show();
-}
-
-async function saveMemberData() {
-    const updatedMember = {
-        name: document.getElementById('editName').value,
-        taka: parseFloat(document.getElementById('editTaka').value) || 0,
-        meal: parseInt(document.getElementById('editMeal').value) || 0,
-        handcash: parseFloat(document.getElementById('editHandcash').value) || 0
-    };
-    
-    membersData[currentEditIndex] = updatedMember;
-    await updateGoogleSheet();
-    renderMembersTable();
-    updateDashboardStats();
-    
-    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-    alert('✅ Data updated successfully!');
-}
-
-async function updateGoogleSheet() {
+async function loadData() {
     try {
-        await fetch(webAppUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ members: membersData, action: 'update' })
-        });
-        console.log('Update sent');
+        $('#loader').show();
+
+        const response = await fetch(`${APP_SCRIPT_URL}?t=${Date.now()}`);
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        membersData = data.members || [];
+        summaryData = data.summary || {};
+
+        const totalAmount = Number(summaryData.totalAmount) || 0;
+        const totalExpense = Number(summaryData.totalExpense) || 0;
+        const month = summaryData.month || "January";
+
+        const totalMembers = membersData.length;
+        const totalMeals = membersData.reduce((sum, m) => sum + Number(m.meal || 0), 0);
+        const avgAmount = totalMembers > 0 ? Math.round(totalAmount / totalMembers) : 0;
+
+        // Update Dashboard
+        $('#total-amt-display').text(`৳ ${totalAmount}`);
+        $('#total-exp-display').text(`৳ ${totalExpense}`);
+        $('#month-display').text(month);
+
+        $('#total-meals').text(totalMeals);
+        $('#total-members').text(totalMembers);
+        $('#avg-amount').text(`৳ ${avgAmount}`);
+
+        // Footer
+        $('#footer-total').text(`৳ ${totalAmount}`);
+        $('#footer-expense').text(`৳ ${totalExpense}`);
+        $('#footer-month').text(month);
+
+        // Render Members
+        renderMembersTable();
+
+        $('#loader').hide();
+
     } catch (error) {
-        console.error('Update error:', error);
+        console.error(error);
+        $('#loader').html(`<div class="alert alert-danger text-center">Error: ${error.message}</div>`);
     }
 }
 
 function renderMembersTable() {
-    const listBody = document.getElementById('member-list');
-    listBody.innerHTML = '';
-    
-    membersData.forEach((member, index) => {
-        const mealText = member.meal === 1 ? 'Meal' : 'Meals';
-        const editButton = isAdmin ? 
-            `<td><button class="edit-btn" onclick="editMember(${index})"><i class="fas fa-edit"></i> Edit</button></td>` : '';
-        
-        const row = `
+    const tbody = $('#member-list');
+    tbody.empty();
+
+    membersData.forEach(member => {
+        tbody.append(`
             <tr>
-                <td><i class="fas fa-user-circle me-2"></i>${member.name}</td>
-                <td><span class="badge-taka">৳ ${(member.taka || 0).toFixed(2)}</span></td>
-                <td><span class="badge-meal">${member.meal || 0} ${mealText}</span></td>
-                <td><span class="badge-handcash">৳ ${(member.handcash || 0).toFixed(2)}</span></td>
-                ${editButton}
+                <td><strong>${member.name}</strong></td>
+                <td><span class="badge-taka">৳ ${Number(member.taka)}</span></td>
+                <td><span class="badge-meal">${Number(member.meal)}</span></td>
+                <td><span class="badge-handcash">৳ ${Number(member.handcash)}</span></td>
             </tr>
-        `;
-        listBody.innerHTML += row;
+        `);
     });
 }
 
-function updateDashboardStats() {
-    const totalMeals = membersData.reduce((sum, m) => sum + (Number(m.meal) || 0), 0);
-    const totalMembers = membersData.length;
-    const totalAmount = membersData.reduce((sum, m) => sum + (Number(m.taka) || 0), 0);
-    const avgAmount = totalMembers > 0 ? totalAmount / totalMembers : 0;
-    
-    let totalExpense = 0;
-    if (window.summaryData && window.summaryData.totalExpense) {
-        totalExpense = Number(window.summaryData.totalExpense);
-    }
-    
-    document.getElementById('total-amt-display').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
-    document.getElementById('total-exp-display').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
-    document.getElementById('month-display').innerHTML = window.summaryData?.month || 'January';
-    
-    document.getElementById('total-meals').innerText = totalMeals;
-    document.getElementById('total-members').innerText = totalMembers;
-    document.getElementById('avg-amount').innerHTML = `৳ ${avgAmount.toFixed(2)}`;
-    
-    document.getElementById('footer-total').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
-    document.getElementById('footer-expense').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
-    document.getElementById('footer-month').innerText = window.summaryData?.month || 'January';
+function openLoginModal() {
+    new bootstrap.Modal(document.getElementById('loginModal')).show();
 }
 
-async function fetchData() {
-    try {
-        document.getElementById('loader').style.display = 'block';
-        
-        const response = await fetch(webAppUrl);
-        const data = await response.json();
-        
-        if (data.error) throw new Error(data.error);
-        
-        membersData = data.members || [];
-        window.summaryData = data.summary || {};
-        
-        updateDashboardStats();
-        renderMembersTable();
-        
-        document.getElementById('loader').style.display = 'none';
-        
-    } catch (error) {
-        console.error("Error:", error);
-        document.getElementById('loader').innerHTML = `<div class="alert alert-danger m-4">Error: ${error.message}</div>`;
+function doLogin() {
+    const user = $('#adminUser').val();
+    const pass = $('#adminPass').val();
+
+    if (user === "admin" && pass === "admin123") {
+        isAdmin = true;
+        alert("✅ Admin Login Successful!");
+        bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+        loadData();
+    } else {
+        alert("❌ Wrong Username or Password!");
     }
 }
-
-window.onload = () => {
-    fetchData();
-    setInterval(fetchData, 30000);
-};
