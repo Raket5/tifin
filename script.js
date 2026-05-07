@@ -1,5 +1,5 @@
 // Web App URL-ti boshon
-const webAppUrl = "https://script.google.com/macros/s/AKfycbw4Lmg_cS40PZVhmsIFd5jJiTt739A4Jv-GKYvwy2l4ltN_fPjbIPawExCpuKo9hdcVjg/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbwCCDwFojPH2RGGOQBL_lE8RdMkXTO6WkFGOKYnunKtAl5c1XLXqqQ4jj6RF71tGwUx6Q/exec";
 
 async function fetchData() {
     try {
