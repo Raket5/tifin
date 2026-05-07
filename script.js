@@ -1,14 +1,11 @@
-// ============================================
-// PUT YOUR APPS SCRIPT URL HERE
-// ============================================
-const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzulA7iv0nfqnKnF13ix1JLN5qWEvfdroMMbY7QTh3oPWmGCot710OJazw7p59GqZ6eyA/exec";
+// আপনার দেওয়া URL ব্যবহার করা হয়েছে
+const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyjNQb-xZjoSNaV9yh8qysb3c2v5Ko6WLbhufCn_Oro5HIsLZ87cPhnQJsRxZOgTHg7A/exec";
 
-// Global variables
 let membersData = [];
 let isAdmin = false;
 let currentEditIndex = null;
 
-// Page navigation
+// Navigation
 $(document).ready(function() {
     $('.nav-item').click(function() {
         const page = $(this).data('page');
@@ -28,19 +25,20 @@ async function loadData() {
         $('#loader').show();
         
         const response = await fetch(`${APP_SCRIPT_URL}?t=${Date.now()}`, {
+            method: 'GET',
             cache: 'no-store',
             headers: { 'Cache-Control': 'no-cache' }
         });
         
         const data = await response.json();
         
-        if (data.error) {
+        if (!data.success && data.error) {
             throw new Error(data.error);
         }
         
         membersData = data.members || [];
         
-        // Update dashboard
+        // Calculate totals
         const totalAmount = membersData.reduce((sum, m) => sum + (Number(m.taka) || 0), 0);
         const totalMeals = membersData.reduce((sum, m) => sum + (Number(m.meal) || 0), 0);
         const totalMembers = membersData.length;
@@ -48,6 +46,7 @@ async function loadData() {
         const totalExpense = data.summary?.totalExpense || 0;
         const month = data.summary?.month || 'January';
         
+        // Update UI
         $('#totalAmount').text(`৳ ${totalAmount.toFixed(2)}`);
         $('#totalExpense').text(`৳ ${totalExpense.toFixed(2)}`);
         $('#monthName').text(month);
@@ -58,14 +57,12 @@ async function loadData() {
         $('#footerExpense').text(`৳ ${totalExpense.toFixed(2)}`);
         $('#footerMonth').text(month);
         
-        // Render members table
         renderMembersTable();
-        
         $('#loader').hide();
         
     } catch (error) {
         console.error('Error:', error);
-        $('#loader').html(`<div class="alert alert-danger m-3">Error: ${error.message}</div>`);
+        $('#loader').html(`<div class="alert alert-danger m-3">Error: ${error.message}<br><br>Please check:<br>1. Apps Script is deployed<br>2. URL is correct<br>3. 'Who has access: Anyone'</div>`);
     }
 }
 
@@ -76,7 +73,7 @@ function renderMembersTable() {
     
     membersData.forEach((member, index) => {
         const mealText = member.meal == 1 ? 'Meal' : 'Meals';
-        const editBtn = isAdmin ? `<td><button class="edit-btn" onclick="openEditModal(${index})"><i class="fas fa-edit"></i> Edit</button></td>` : '';
+        const editBtn = isAdmin ? `<button class="edit-btn" onclick="openEditModal(${index})"><i class="fas fa-edit"></i> Edit</button>` : '';
         
         const row = `
             <tr>
@@ -84,7 +81,7 @@ function renderMembersTable() {
                 <td><span class="badge badge-taka">৳ ${Number(member.taka).toFixed(2)}</span></td>
                 <td><span class="badge badge-meal">${member.meal || 0} ${mealText}</span></td>
                 <td><span class="badge badge-cash">৳ ${Number(member.handcash).toFixed(2)}</span></td>
-                ${editBtn}
+                ${editBtn ? `<td>${editBtn}</td>` : ''}
             </tr>
         `;
         tbody.append(row);
@@ -104,14 +101,14 @@ function doLogin() {
     const user = $('#loginUser').val();
     const pass = $('#loginPass').val();
     
-    // Change these to your desired username/password
+    // Change password here
     if (user === 'admin' && pass === 'admin123') {
         isAdmin = true;
         bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
-        $('.login-button').html('<i class="fas fa-user-check"></i> Admin Mode').addClass('admin-mode');
+        $('.login-btn').html('<i class="fas fa-user-check"></i> Admin Mode').addClass('admin-mode');
         $('#editHeader').show();
         renderMembersTable();
-        alert('✅ Login successful! Now you can edit data.');
+        alert('✅ Login successful! You can now edit data.');
     } else {
         $('#loginError').removeClass('d-none').text('❌ Invalid username or password!');
     }
@@ -147,15 +144,18 @@ async function saveEdit() {
     
     membersData[currentEditIndex] = updatedMember;
     
-    // Send update to Google Sheet
-    await fetch(APP_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ members: membersData })
-    });
-    
-    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-    await loadData();
-    alert('✅ Data updated successfully!');
+    try {
+        await fetch(APP_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ members: membersData })
+        });
+        
+        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+        await loadData();
+        alert('✅ Data updated successfully!');
+    } catch(e) {
+        alert('Error updating data: ' + e.message);
+    }
 }
