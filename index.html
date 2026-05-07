@@ -1,322 +1,281 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+    <title>BN Tiffin Test</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BN Tiffin Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            font-family: 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container-custom { max-width: 1300px; margin: 0 auto; }
-        .main-card {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        /* Navbar */
-        .nav-bar {
-            background: #1b5e20;
-            padding: 0 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .nav-menu {
-            display: flex;
-            gap: 5px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 15px 20px;
-            color: rgba(255,255,255,0.9);
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.3s;
-            border-bottom: 2px solid transparent;
-        }
-        .nav-item:hover { background: rgba(255,255,255,0.1); color: white; }
-        .nav-item.active {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border-bottom-color: #ffd700;
-        }
-        .login-btn {
-            background: #ffd700;
-            color: #1b5e20;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .login-btn.admin-mode { background: #4caf50; color: white; }
-        .header {
-            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-            padding: 30px;
-            text-align: center;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .header h1 {
-            background: linear-gradient(135deg, #1b5e20, #2e7d32);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-        }
-        /* Summary Cards */
-        .summary-section { padding: 25px; background: #fafafa; }
-        .summary-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .summary-row:last-child { border-bottom: none; }
-        .summary-label { font-weight: 600; color: #555; }
-        .summary-value { font-weight: 800; font-size: 1.3rem; }
-        .value-amount { color: #2e7d32; }
-        .value-expense { color: #d32f2f; }
-        .value-month { color: #f57c00; }
-        .note-text {
-            background: #fff3cd;
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 10px;
-            color: #856404;
-        }
-        /* Stats */
-        .stats-grid { padding: 0 25px 25px 25px; }
-        .stat-box {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .stat-number { font-size: 1.8rem; font-weight: 800; display: block; margin-top: 8px; }
-        /* Tables */
-        .table-section { padding: 0 25px 25px 25px; }
-        .data-table {
-            background: white;
-            border-radius: 20px;
-            overflow-x: auto;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .data-table th {
-            background: #e8f5e9;
-            padding: 12px;
-            color: #1b5e20;
-            font-weight: 600;
-        }
-        .data-table td { padding: 10px 12px; border-bottom: 1px solid #eee; }
-        .data-table tr:hover { background: #f1f8e9; }
-        .badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        .badge-taka { background: #e8f5e9; color: #2e7d32; }
-        .badge-meal { background: #fff3e0; color: #f57c00; }
-        .badge-cash { background: #e3f2fd; color: #1565c0; }
-        .edit-btn {
-            background: #ffd700;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .edit-btn:hover { background: #ffc107; }
-        /* Admin Panel */
-        .admin-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin: 0 25px 25px 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #e0e0e0;
-        }
-        .admin-panel h4 { color: #1b5e20; margin-bottom: 15px; }
-        .footer {
-            background: #1b5e20;
-            padding: 15px 25px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .footer-item {
-            background: rgba(255,255,255,0.15);
-            padding: 5px 18px;
-            border-radius: 30px;
-        }
-        .page { display: none; }
-        .page.active { display: block; }
-        .loader { text-align: center; padding: 50px; }
-        @media (max-width: 768px) {
-            .nav-bar { flex-direction: column; padding: 10px; }
-            .nav-menu { flex-wrap: wrap; justify-content: center; }
-            .nav-item span { display: none; }
-        }
+        body { font-family: Arial; padding: 20px; background: #f0f2f5; }
+        .card { background: white; border-radius: 10px; padding: 20px; margin: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #1b5e20; color: white; }
+        button { background: #ffd700; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
     </style>
 </head>
 <body>
-<div class="container-custom">
-    <div class="main-card">
-        <!-- Navigation -->
-        <div class="nav-bar">
-            <ul class="nav-menu">
-                <li class="nav-item active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></li>
-                <li class="nav-item" data-page="members"><i class="fas fa-users"></i><span> Members</span></li>
-                <li class="nav-item" data-page="admin"><i class="fas fa-cog"></i><span> Admin Panel</span></li>
-                <li class="nav-item" data-page="reports"><i class="fas fa-chart-line"></i><span> Reports</span></li>
-            </ul>
-            <button class="login-btn" onclick="showLoginModal()"><i class="fas fa-lock"></i> Admin Login</button>
-        </div>
 
-        <!-- Header -->
-        <div class="header">
-            <h1><i class="fas fa-utensils"></i> BN Tiffin Management</h1>
-        </div>
-
-        <!-- Loader -->
-        <div id="loader" class="loader">
-            <div class="spinner-border text-success"></div>
-            <p>Loading data...</p>
-        </div>
-
-        <!-- DASHBOARD PAGE (Public - No Login Required) -->
-        <div id="dashboard-page" class="page active">
-            <div class="summary-section">
-                <div class="summary-card">
-                    <div class="summary-row"><span class="summary-label"><i class="fas fa-money-bill-wave"></i> Total Amount</span><span class="summary-value value-amount" id="totalAmount">৳ 0</span></div>
-                    <div class="summary-row"><span class="summary-label"><i class="fas fa-receipt"></i> Total Expense</span><span class="summary-value value-expense" id="totalExpense">৳ 0</span></div>
-                    <div class="summary-row"><span class="summary-label"><i class="fas fa-calendar"></i> Month</span><span class="summary-value value-month" id="monthName">January</span></div>
-                    <div class="note-text" id="noteDisplay"><i class="fas fa-sticky-note"></i> Loading note...</div>
-                </div>
-            </div>
-            <div class="stats-grid">
-                <div class="row g-3">
-                    <div class="col-md-4"><div class="stat-box"><i class="fas fa-utensils fa-2x" style="color:#f57c00"></i><span class="stat-number" style="color:#f57c00" id="totalMeals">0</span><div>Total Meals (Month)</div></div></div>
-                    <div class="col-md-4"><div class="stat-box"><i class="fas fa-users fa-2x" style="color:#0288d1"></i><span class="stat-number" style="color:#0288d1" id="totalMembers">0</span><div>Total Members</div></div></div>
-                    <div class="col-md-4"><div class="stat-box"><i class="fas fa-chart-pie fa-2x" style="color:#5e35b1"></i><span class="stat-number" style="color:#5e35b1" id="avgAmount">৳ 0</span><div>Average / Person</div></div></div>
-                </div>
+<div>
+    <h1>🍽️ BN Tiffin Management</h1>
+    
+    <!-- YOUR APPS SCRIPT URL - PUT HERE -->
+    <input type="text" id="urlInput" style="width: 100%; margin-bottom: 10px;" 
+           placeholder="Paste your Apps Script URL here">
+    <button onclick="setUrlAndLoad()">Set URL & Load Data</button>
+    
+    <div id="status" style="margin: 10px 0;"></div>
+    
+    <div id="content" style="display: none;">
+        <!-- Dashboard -->
+        <div class="card">
+            <h2>📊 Financial Summary</h2>
+            <p><strong>Total Amount:</strong> ৳ <span id="totalAmount">0</span></p>
+            <p><strong>Total Expense:</strong> ৳ <span id="totalExpense">0</span></p>
+            <p><strong>Month:</strong> <span id="month">-</span></p>
+            <div style="background: #fff3cd; padding: 10px; border-radius: 5px;">
+                <strong>📝 Note:</strong> <span id="note">-</span>
             </div>
         </div>
-
-        <!-- MEMBERS PAGE (Public - No Login Required) -->
-        <div id="members-page" class="page">
-            <div class="table-section">
-                <h4><i class="fas fa-users"></i> All Members - Monthly Deposit</h4>
-                <div class="data-table">
-                    <table class="table">
-                        <thead><tr><th>#</th><th>Name</th><th>Monthly Taka</th><th>Status</th></thead>
-                        <tbody id="membersTable"></tbody>
-                    </table>
-                </div>
+        
+        <!-- Stats -->
+        <div class="card">
+            <h2>📈 Statistics</h2>
+            <p><strong>Total Members:</strong> <span id="totalMembers">0</span></p>
+            <p><strong>Average / Person:</strong> ৳ <span id="avgAmount">0</span></p>
+        </div>
+        
+        <!-- Members Table -->
+        <div class="card">
+            <h2>👥 Members Monthly Deposit</h2>
+            <table id="membersTable">
+                <thead><tr><th>#</th><th>Name</th><th>Taka</th></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        
+        <!-- Admin Panel (shows only after login) -->
+        <div class="card" id="adminPanel" style="display: none; border: 2px solid #ffc107;">
+            <h2>🔧 Admin Control Panel</h2>
+            
+            <div>
+                <h3>Update Total Expense</h3>
+                <input type="number" id="expenseInput" placeholder="Enter expense amount">
+                <button onclick="updateExpense()">Update Expense</button>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <h3>Update Note</h3>
+                <textarea id="noteInput" rows="2" placeholder="Enter note..."></textarea>
+                <button onclick="updateNote()">Update Note</button>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <h3>Update Member Deposit</h3>
+                <div id="memberEditList"></div>
             </div>
         </div>
-
-        <!-- ADMIN PANEL (Login Required to Edit) -->
-        <div id="admin-page" class="page">
-            <div class="admin-panel">
-                <h4><i class="fas fa-edit"></i> Admin Control Panel</h4>
-                <p class="text-muted">নিচের তথ্যগুলো এডিট করতে পারবেন (শুধু এডমিন)</p>
-                
-                <div class="alert alert-info" id="adminLoginAlert">
-                    <i class="fas fa-lock"></i> এডিট করতে চাইলে উপরের "Admin Login" বাটনে ক্লিক করুন।
-                </div>
-                
-                <div id="adminControls" style="display: none;">
-                    <!-- Update Expense -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold"><i class="fas fa-receipt"></i> Total Expense</label>
-                        <div class="input-group">
-                            <input type="number" id="expenseInput" class="form-control" placeholder="Enter total expense">
-                            <button class="btn btn-success" onclick="updateExpense()">Update Expense</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Update Note -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold"><i class="fas fa-sticky-note"></i> Note / Announcement</label>
-                        <textarea id="noteInput" class="form-control" rows="3" placeholder="Enter note here..."></textarea>
-                        <button class="btn btn-success mt-2" onclick="updateNote()">Update Note</button>
-                    </div>
-                    
-                    <!-- Update Member Deposits -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold"><i class="fas fa-money-bill-wave"></i> Update Member Monthly Deposit</label>
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered">
-                                <thead><tr><th>Member</th><th>Current Taka</th><th>New Taka</th><th>Action</th></thead>
-                                <tbody id="memberEditList"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- REPORTS PAGE (Public) -->
-        <div id="reports-page" class="page">
-            <div class="summary-section">
-                <div class="summary-card text-center">
-                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                    <p>Reports & Analytics Coming Soon...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <div class="footer-item"><i class="fas fa-chart-line"></i> Collection: <strong id="footerAmount">৳ 0</strong></div>
-            <div class="footer-item"><i class="fas fa-chart-bar"></i> Expense: <strong id="footerExpense">৳ 0</strong></div>
-            <div class="footer-item"><i class="fas fa-calendar"></i> Month: <strong id="footerMonth">N/A</strong></div>
-        </div>
+    </div>
+    
+    <div id="loginSection" class="card" style="text-align: center;">
+        <button onclick="showLogin()" style="background: #1b5e20; color: white;">🔐 Admin Login</button>
     </div>
 </div>
 
 <!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white"><h5><i class="fas fa-lock"></i> Admin Login</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <div id="loginError" class="alert alert-danger d-none"></div>
-                <input type="text" id="loginUser" class="form-control mb-3" placeholder="Username">
-                <input type="password" id="loginPass" class="form-control mb-3" placeholder="Password">
-                <button class="btn btn-success w-100" onclick="doLogin()">Login</button>
-            </div>
-        </div>
+<div id="loginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center;">
+    <div style="background: white; padding: 30px; border-radius: 10px; width: 300px;">
+        <h3>Admin Login</h3>
+        <input type="text" id="loginUser" placeholder="Username" style="width: 100%; margin: 10px 0;">
+        <input type="password" id="loginPass" placeholder="Password" style="width: 100%; margin: 10px 0;">
+        <div id="loginMsg" class="error"></div>
+        <button onclick="doLogin()" style="width: 100%;">Login</button>
+        <button onclick="closeLogin()" style="width: 100%; margin-top: 5px;">Cancel</button>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="script.js"></script>
+<script>
+let APP_URL = "https://script.google.com/macros/s/AKfycbxNJJ-2wuLCMUXcqcRjDM6vMq5385wQ5rsseOUjgU-3mHI22cq8xU2siUXQ2B2iR5flag/exec";
+let membersData = [];
+let isAdmin = false;
+let summaryData = {};
+
+function setUrlAndLoad() {
+    APP_URL = document.getElementById('urlInput').value.trim();
+    if (APP_URL) {
+        localStorage.setItem('appUrl', APP_URL);
+        loadData();
+    } else {
+        alert('Please paste your Apps Script URL');
+    }
+}
+
+// Check for saved URL
+const savedUrl = localStorage.getItem('appUrl');
+if (savedUrl) {
+    document.getElementById('urlInput').value = savedUrl;
+    APP_URL = savedUrl;
+    loadData();
+}
+
+async function loadData() {
+    if (!APP_URL) return;
+    
+    document.getElementById('status').innerHTML = '<span class="success">Loading data...</span>';
+    
+    try {
+        const response = await fetch(`${APP_URL}?t=${Date.now()}`, {
+            method: 'GET',
+            cache: 'no-store'
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.error || 'Failed to load');
+        }
+        
+        membersData = data.members || [];
+        summaryData = data;
+        
+        // Update dashboard
+        const totalAmount = membersData.reduce((sum, m) => sum + (Number(m.taka) || 0), 0);
+        const totalMembers = membersData.length;
+        const avgAmount = totalMembers > 0 ? totalAmount / totalMembers : 0;
+        
+        document.getElementById('totalAmount').innerText = totalAmount.toFixed(2);
+        document.getElementById('totalExpense').innerText = (data.totalExpense || 0).toFixed(2);
+        document.getElementById('month').innerText = data.month || 'January';
+        document.getElementById('note').innerText = data.note || 'No notes';
+        document.getElementById('totalMembers').innerText = totalMembers;
+        document.getElementById('avgAmount').innerText = avgAmount.toFixed(2);
+        
+        // Render members table
+        const tbody = document.querySelector('#membersTable tbody');
+        tbody.innerHTML = '';
+        membersData.forEach((member, idx) => {
+            tbody.innerHTML += `<tr><td>${idx+1}</td><td>${member.name}</td><td>৳ ${Number(member.taka).toFixed(2)}</td></tr>`;
+        });
+        
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('status').innerHTML = '<span class="success">✅ Data loaded successfully!</span>';
+        
+    } catch(error) {
+        console.error(error);
+        document.getElementById('status').innerHTML = `<span class="error">❌ Error: ${error.message}<br>Check: 1. URL correct? 2. Apps Script deployed with "Anyone" access?</span>`;
+        document.getElementById('content').style.display = 'none';
+    }
+}
+
+function showLogin() {
+    document.getElementById('loginModal').style.display = 'flex';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginMsg').innerHTML = '';
+}
+
+function closeLogin() {
+    document.getElementById('loginModal').style.display = 'none';
+}
+
+function doLogin() {
+    const user = document.getElementById('loginUser').value;
+    const pass = document.getElementById('loginPass').value;
+    
+    if (user === 'admin' && pass === 'admin123') {
+        isAdmin = true;
+        closeLogin();
+        document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('loginSection').style.display = 'none';
+        
+        // Load admin edit list
+        loadMemberEditList();
+        document.getElementById('expenseInput').value = summaryData.totalExpense || '';
+        document.getElementById('noteInput').value = summaryData.note || '';
+        
+        alert('✅ Admin login successful!');
+    } else {
+        document.getElementById('loginMsg').innerHTML = '❌ Invalid username or password!';
+    }
+}
+
+function loadMemberEditList() {
+    const container = document.getElementById('memberEditList');
+    container.innerHTML = '';
+    
+    membersData.forEach((member, idx) => {
+        const div = document.createElement('div');
+        div.style.margin = '10px 0';
+        div.style.padding = '10px';
+        div.style.border = '1px solid #ddd';
+        div.style.borderRadius = '5px';
+        div.innerHTML = `
+            <strong>${member.name}</strong><br>
+            Current: ৳ ${Number(member.taka).toFixed(2)}<br>
+            <input type="number" id="editTaka_${idx}" value="${member.taka}" style="width: 150px; display: inline-block;">
+            <button onclick="updateMemberTaka(${idx})">Update</button>
+        `;
+        container.appendChild(div);
+    });
+}
+
+async function updateMemberTaka(index) {
+    if (!isAdmin) return;
+    
+    const newTaka = parseFloat(document.getElementById(`editTaka_${index}`).value) || 0;
+    
+    try {
+        await fetch(APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({ type: 'updateMember', index: index, taka: newTaka })
+        });
+        alert('✅ Member deposit updated!');
+        loadData();
+    } catch(e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+async function updateExpense() {
+    if (!isAdmin) return;
+    
+    const expense = parseFloat(document.getElementById('expenseInput').value);
+    if (isNaN(expense)) {
+        alert('Enter valid amount');
+        return;
+    }
+    
+    try {
+        await fetch(APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({ type: 'updateExpense', expense: expense })
+        });
+        alert('✅ Expense updated!');
+        loadData();
+    } catch(e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+async function updateNote() {
+    if (!isAdmin) return;
+    
+    const note = document.getElementById('noteInput').value;
+    
+    try {
+        await fetch(APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({ type: 'updateNote', note: note })
+        });
+        alert('✅ Note updated!');
+        loadData();
+    } catch(e) {
+        alert('Error: ' + e.message);
+    }
+}
+</script>
+
 </body>
 </html>
