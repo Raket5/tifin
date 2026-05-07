@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BN Tiffin Ma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ░░ APP SHELL ░░ -->
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="fas fa-bowl-rice"></i></div>
+      <div class="brand-text">
+        <span class="brand-name">BN Tiffin</span>
+        <span class="brand-sub">Management System</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-item active" data-page="dashboard">
+        <i class="fas fa-gauge-high"></i><span>Dashboard</span>
+      </a>
+      <a class="nav-item" data-page="members">
+        <i class="fas fa-users"></i><span>Members</span>
+      </a>
+      <a class="nav-item" data-page="reports">
+        <i class="fas fa-chart-bar"></i><span>Reports</span>
+      </a>
+      <a class="nav-item" data-page="admin" id="admin-nav-item" style="display:none">
+        <i class="fas fa-shield-halved"></i><span>Admin Panel</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="login-btn" id="loginBtn" onclick="openLoginModal()">
+        <i class="fas fa-lock"></i><span>Admin Login</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MOBILE TOP BAR ── -->
+  <div class="topbar">
+    <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <span class="topbar-title"><i class="fas fa-bowl-rice"></i> BN Tiffin Ma</span>
+    <button class="login-btn-mobile" onclick="openLoginModal()"><i class="fas fa-lock"></i></button>
+  </div>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="main" id="main">
+
+    <!-- LOADER -->
+    <div class="loader-screen" id="loader">
+      <div class="loader-inner">
+        <div class="loader-ring"></div>
+        <p>Loading data…</p>
+      </div>
+    </div>
+
+    <!-- ══ DASHBOARD PAGE ══ -->
+    <div class="page active-page" id="dashboard-page">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <div class="last-updated" id="lastUpdated">—</div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="kpi-strip">
+        <div class="kpi-card kpi-green">
+          <div class="kpi-icon"><i class="fas fa-bangladeshi-taka-sign"></i></div>
+          <div class="kpi-body">
+            <div class="kpi-val" id="kpi-total">৳ 0</div>
+            <div class="kpi-lbl">Total Collection</div>
+          </div>
+        </div>
+        <div class="kpi-card kpi-red">
+          <div class="kpi-icon"><i class="fas fa-receipt"></i></div>
+          <div class="kpi-body">
+            <div class="kpi-val" id="kpi-expense">৳ 0</div>
+            <div class="kpi-lbl">Total Expense</div>
+          </div>
+        </div>
+        <div class="kpi-card kpi-blue">
+          <div class="kpi-icon"><i class="fas fa-wallet"></i></div>
+          <div class="kpi-body">
+            <div class="kpi-val" id="kpi-balance">৳ 0</div>
+            <div class="kpi-lbl">Balance</div>
+          </div>
+        </div>
+        <div class="kpi-card kpi-amber">
+          <div class="kpi-icon"><i class="fas fa-utensils"></i></div>
+          <div class="kpi-body">
+            <div class="kpi-val" id="kpi-meals">0</div>
+            <div class="kpi-lbl">Total Meals</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary + quick stats -->
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head">
+            <i class="fas fa-calendar-days"></i> Financial Summary
+            <span class="month-badge" id="month-badge">—</span>
+          </div>
+          <table class="summary-tbl">
+            <tr>
+              <td><i class="fas fa-circle-dollar-to-slot"></i> Total Amount</td>
+              <td class="val green" id="s-total">৳ 0.00</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-fire-burner"></i> Total Expense</td>
+              <td class="val red"   id="s-expense">৳ 0.00</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-scale-balanced"></i> Balance</td>
+              <td class="val blue"  id="s-balance">৳ 0.00</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-person-rays"></i> Members</td>
+              <td class="val purple" id="s-members">0</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-chart-pie"></i> Avg / Person</td>
+              <td class="val amber" id="s-avg">৳ 0.00</td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-utensils"></i> Meal Rate</td>
+              <td class="val teal" id="s-rate">৳ 0.00</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><i class="fas fa-trophy"></i> Top Contributors</div>
+          <div id="top-contributors" class="contributor-list"></div>
+        </div>
+      </div>
+
+      <!-- Note -->
+      <div class="note-bar" id="note-bar" style="display:none">
+        <i class="fas fa-sticky-note"></i> <span id="note-text"></span>
+      </div>
+    </div>
+
+    <!-- ══ MEMBERS PAGE ══ -->
+    <div class="page" id="members-page">
+      <div class="page-header">
+        <h1>Members</h1>
+        <div class="member-count-badge" id="member-count-badge">0 members</div>
+      </div>
+
+      <div class="card no-pad">
+        <table class="data-table" id="members-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Deposit (৳)</th>
+              <th>Meals</th>
+              <th>Hand Cash (৳)</th>
+              <th class="admin-col" style="display:none">Edit</th>
+            </tr>
+          </thead>
+          <tbody id="member-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ REPORTS PAGE ══ -->
+    <div class="page" id="reports-page">
+      <div class="page-header"><h1>Reports</h1></div>
+
+      <div class="reports-grid">
+        <div class="card">
+          <div class="card-head"><i class="fas fa-chart-bar"></i> Deposit per Member</div>
+          <div class="bar-chart" id="bar-deposit"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i class="fas fa-utensils"></i> Meals per Member</div>
+          <div class="bar-chart" id="bar-meals"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i class="fas fa-hand-holding-dollar"></i> Hand Cash per Member</div>
+          <div class="bar-chart" id="bar-handcash"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ADMIN PAGE ══ -->
+    <div class="page" id="admin-page">
+      <div class="page-header"><h1><i class="fas fa-shield-halved"></i> Admin Panel</h1></div>
+
+      <div class="admin-grid">
+        <!-- Expense update -->
+        <div class="card">
+          <div class="card-head"><i class="fas fa-fire-burner"></i> Update Total Expense</div>
+          <div class="form-row">
+            <input type="number" id="inp-expense" class="inp" placeholder="Enter amount (৳)" step="0.01" />
+            <button class="btn-primary" onclick="adminUpdateExpense()"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- Month update -->
+        <div class="card">
+          <div class="card-head"><i class="fas fa-calendar"></i> Update Month</div>
+          <div class="form-row">
+            <input type="text" id="inp-month" class="inp" placeholder="e.g. January" />
+            <button class="btn-primary" onclick="adminUpdateMonth()"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- Note update -->
+        <div class="card full-width">
+          <div class="card-head"><i class="fas fa-sticky-note"></i> Notice / Note</div>
+          <div class="form-row">
+            <input type="text" id="inp-note" class="inp" placeholder="Write a notice for members…" />
+            <button class="btn-primary" onclick="adminUpdateNote()"><i class="fas fa-save"></i> Save</button>
+          </div>
+        </div>
+
+        <!-- Member quick-edit list -->
+        <div class="card full-width">
+          <div class="card-head"><i class="fas fa-users-gear"></i> Edit Members</div>
+          <div id="admin-member-list" class="admin-member-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── LOGIN MODAL ── -->
+<div class="modal-overlay" id="loginModal" onclick="closeModal('loginModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <i class="fas fa-lock"></i> Admin Login
+      <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-danger d-none" id="loginError"></div>
+      <label>Username</label>
+      <input type="text"     id="inp-user" class="inp" placeholder="admin" />
+      <label>Password</label>
+      <input type="password" id="inp-pass" class="inp" placeholder="••••••" />
+      <button class="btn-primary full" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT MEMBER MODAL ── -->
+<div class="modal-overlay" id="editModal" onclick="closeModal('editModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <i class="fas fa-user-pen"></i> Edit Member
+      <button class="modal-close" onclick="closeModal('editModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-idx" />
+      <label>Name</label>
+      <input type="text"   id="edit-name"     class="inp" readonly />
+      <label>Deposit (৳)</label>
+      <input type="number" id="edit-taka"     class="inp" step="0.01" />
+      <label>Meals</label>
+      <input type="number" id="edit-meal"     class="inp" />
+      <label>Hand Cash (৳)</label>
+      <input type="number" id="edit-handcash" class="inp" step="0.01" />
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+        <button class="btn-primary"   onclick="saveMemberEdit()"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
