@@ -1,5 +1,5 @@
 // Web App URL
-const webAppUrl = "https://script.google.com/macros/s/AKfycbzqN1gjglWMpkU969zVZr3QvEGbVU82w7a_fvMnKVkaS8-o4h45powEMWih5EQFM_MV4g/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbx3Jk8K0Mcl-fVBP5ZyCM3Fe5Bz2LBYrXa-uiD6lnJTzlRZnat_vExarFTJEGcRm5ztXQ/exec";
 
 let membersData = [];
 let isAdmin = false;
