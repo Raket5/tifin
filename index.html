@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BN Tif</title>
+    <title>BN Tiffin Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -14,8 +14,8 @@
         }
 
         body {
-            background: #f0f2f5;
-            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            font-family: 'Segoe UI', 'Roboto', 'Poppins', sans-serif;
             min-height: 100vh;
             padding: 20px;
         }
@@ -25,18 +25,18 @@
             margin: 0 auto;
         }
 
+        /* Main Card */
         .modern-card {
             background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
         /* Navigation */
         .nav-wrapper {
-            background: #ffffff;
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
             padding: 0 30px;
-            border-bottom: 1px solid #e9ecef;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -56,7 +56,7 @@
             align-items: center;
             gap: 10px;
             padding: 18px 24px;
-            color: #6c757d;
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
@@ -65,75 +65,76 @@
         }
 
         .nav-link-custom:hover {
-            color: #0d6efd;
-            background: #f8f9fa;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .nav-link-custom.active {
-            color: #0d6efd;
-            border-bottom-color: #0d6efd;
+            color: white;
+            border-bottom-color: #ffd700;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .login-btn {
-            background: #0d6efd;
-            color: white;
+            background: #ffd700;
+            color: #1b5e20;
             border: none;
-            padding: 8px 20px;
+            padding: 8px 22px;
             border-radius: 8px;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .login-btn:hover {
-            background: #0b5ed7;
+            background: #ffed4a;
+            transform: translateY(-2px);
         }
 
         .login-btn.admin-mode {
-            background: #198754;
-        }
-
-        .login-btn.admin-mode:hover {
-            background: #157347;
+            background: #4caf50;
+            color: white;
         }
 
         /* Header */
         .header-gradient {
-            background: #ffffff;
-            padding: 30px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            padding: 35px 30px;
             text-align: center;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .header-gradient h1 {
-            font-size: 2rem;
-            font-weight: 600;
+            font-size: 2.2rem;
+            font-weight: 700;
             margin: 0;
-            color: #212529;
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        /* Summary Table */
+        /* Summary Table - Green Theme */
         .summary-table-container {
-            padding: 25px 30px;
-            background: #f8f9fa;
+            padding: 30px;
+            background: #fafafa;
         }
 
         .summary-table-wrapper {
             background: white;
-            border-radius: 12px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(46, 125, 50, 0.1);
         }
 
         .summary-title {
-            background: #f8f9fa;
-            color: #212529;
-            padding: 12px 20px;
-            font-size: 1rem;
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            color: white;
+            padding: 14px 24px;
+            font-size: 1.1rem;
             font-weight: 600;
             margin: 0;
-            border-bottom: 1px solid #e9ecef;
         }
 
         .summary-table {
@@ -142,7 +143,7 @@
         }
 
         .summary-table td {
-            padding: 15px 20px;
+            padding: 18px 24px;
             border-bottom: 1px solid #f0f0f0;
         }
 
@@ -151,49 +152,79 @@
         }
 
         .summary-table .label {
-            font-weight: 500;
-            color: #6c757d;
-            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2c3e2f;
+            font-size: 1rem;
             width: 40%;
         }
 
         .summary-table .value {
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
 
         .summary-table .value.total {
-            color: #198754;
+            color: #2e7d32;
         }
 
         .summary-table .value.expense {
-            color: #dc3545;
+            color: #d32f2f;
         }
 
         .summary-table .value.month {
-            color: #0d6efd;
+            color: #f57c00;
         }
 
-        /* Stats Cards */
+        .summary-table i {
+            width: 32px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards - Professional Green */
+        .stats-grid {
+            padding: 0 30px 30px 30px;
+        }
+
         .stats-card {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 22px;
             text-align: center;
-            border: 1px solid #e9ecef;
             transition: all 0.3s ease;
+            border: 1px solid rgba(46, 125, 50, 0.15);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .stats-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.12);
+            border-color: rgba(46, 125, 50, 0.3);
+        }
+
+        .stats-card i {
+            font-size: 2rem;
+            margin-bottom: 12px;
         }
 
         .stats-card .stats-value {
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 800;
             display: block;
             margin-top: 8px;
         }
+
+        .stats-card .stats-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #6c757d;
+        }
+
+        .text-meal { color: #f57c00; }
+        .text-members { color: #0288d1; }
+        .text-avg { color: #5e35b1; }
 
         /* Members Table */
         .table-container {
@@ -202,9 +233,9 @@
 
         .section-title {
             font-size: 1.2rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 20px;
-            color: #212529;
+            color: #1b5e20;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -212,62 +243,68 @@
 
         .custom-table {
             background: white;
-            border-radius: 12px;
+            border-radius: 20px;
             overflow-x: auto;
-            border: 1px solid #e9ecef;
+            border: 1px solid rgba(46, 125, 50, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .custom-table thead {
-            background: #f8f9fa;
-            color: #212529;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            color: #1b5e20;
         }
 
         .custom-table thead th {
-            padding: 12px 15px;
-            font-weight: 600;
+            padding: 14px 16px;
+            font-weight: 700;
             font-size: 0.85rem;
-            border-bottom: 1px solid #e9ecef;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(46, 125, 50, 0.2);
         }
 
         .custom-table tbody tr {
             border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
         }
 
         .custom-table tbody tr:hover {
-            background: #f8f9fa;
+            background: #f1f8e9;
         }
 
         .custom-table tbody td {
-            padding: 12px 15px;
+            padding: 14px 16px;
             vertical-align: middle;
             font-size: 0.9rem;
+            font-weight: 500;
+            color: #2c3e2f;
         }
 
-        /* Badges */
+        /* Badges - Professional */
         .badge-taka {
-            background: #e7f1ff;
-            color: #0d6efd;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-weight: 500;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #1b5e20;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-weight: 700;
             display: inline-block;
         }
 
         .badge-meal {
             background: #fff3e0;
-            color: #fd7e14;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-weight: 500;
+            color: #f57c00;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-weight: 700;
             display: inline-block;
         }
 
         .badge-handcash {
-            background: #e8f5e9;
-            color: #198754;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-weight: 500;
+            background: linear-gradient(135deg, #e3f2fd, #bbdef5);
+            color: #1565c0;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-weight: 700;
             display: inline-block;
         }
 
@@ -278,35 +315,38 @@
 
         .page.active-page {
             display: block;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.4s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Footer */
         .footer-summary {
-            background: #f8f9fa;
-            padding: 15px 30px;
-            color: #6c757d;
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            padding: 16px 30px;
+            color: white;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 15px;
-            border-top: 1px solid #e9ecef;
-            font-size: 0.85rem;
         }
 
         .footer-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
         }
 
         .footer-item strong {
-            color: #212529;
+            font-weight: 700;
+            color: #ffd700;
         }
 
         /* Loader */
@@ -317,28 +357,37 @@
 
         /* Edit Button */
         .edit-btn {
-            background: #ffc107;
-            color: #212529;
+            background: #ffd700;
+            color: #1b5e20;
             border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 5px 12px;
+            border-radius: 8px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 700;
             transition: all 0.2s ease;
         }
 
         .edit-btn:hover {
-            background: #e0a800;
+            background: #ffed4a;
+            transform: scale(1.02);
         }
 
         /* Modal */
         .modal-header {
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            color: white;
+            border-bottom: none;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
             .nav-wrapper {
                 flex-direction: column;
                 padding: 10px;
@@ -350,12 +399,25 @@
             .nav-link-custom span {
                 display: none;
             }
+            .nav-link-custom {
+                padding: 12px 16px;
+            }
             .summary-table .value {
                 font-size: 1rem;
+            }
+            .summary-table td {
+                padding: 12px 16px;
             }
             .table-container {
                 padding: 0 15px 15px 15px;
                 overflow-x: auto;
+            }
+            .stats-card .stats-value {
+                font-size: 1.3rem;
+            }
+            .footer-summary {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -382,7 +444,7 @@
 
         <!-- Loader -->
         <div id="loader" class="loader-wrapper">
-            <div class="spinner-border text-primary" role="status"></div>
+            <div class="spinner-border text-success" role="status"></div>
             <p class="mt-3 text-muted">Loading tiffin data...</p>
         </div>
 
@@ -392,19 +454,19 @@
             <div class="summary-table-container">
                 <div class="summary-table-wrapper">
                     <div class="summary-title">
-                        <i class="fas fa-chart-simple me-2"></i> Financial Summary
+                        <i class="fas fa-chart-line me-2"></i> Financial Summary
                     </div>
                     <table class="summary-table">
                         <tr>
-                            <td class="label"><i class="fas fa-money-bill-wave me-2"></i> Total Amount</td>
+                            <td class="label"><i class="fas fa-money-bill-wave"></i> Total Amount</td>
                             <td class="value total" id="total-amt-display">৳ 0.00</td>
                         </tr>
                         <tr>
-                            <td class="label"><i class="fas fa-receipt me-2"></i> Total Expense</td>
+                            <td class="label"><i class="fas fa-receipt"></i> Total Expense</td>
                             <td class="value expense" id="total-exp-display">৳ 0.00</td>
                         </tr>
                         <tr>
-                            <td class="label"><i class="fas fa-calendar-alt me-2"></i> Month</td>
+                            <td class="label"><i class="fas fa-calendar-alt"></i> Month</td>
                             <td class="value month" id="month-display">January</td>
                         </tr>
                     </table>
@@ -412,27 +474,27 @@
             </div>
 
             <!-- Stats Cards -->
-            <div class="summary-table-container pt-0">
+            <div class="stats-grid">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="stats-card">
-                            <i class="fas fa-utensils text-warning"></i>
-                            <div class="stats-value text-warning" id="total-meals">0</div>
-                            <small class="text-muted">Total Meals</small>
+                            <i class="fas fa-utensils text-meal"></i>
+                            <div class="stats-value text-meal" id="total-meals">0</div>
+                            <div class="stats-label">Total Meals</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="stats-card">
-                            <i class="fas fa-users text-info"></i>
-                            <div class="stats-value text-info" id="total-members">0</div>
-                            <small class="text-muted">Total Members</small>
+                            <i class="fas fa-users text-members"></i>
+                            <div class="stats-value text-members" id="total-members">0</div>
+                            <div class="stats-label">Total Members</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="stats-card">
-                            <i class="fas fa-chart-pie text-secondary"></i>
-                            <div class="stats-value text-secondary" id="avg-amount">৳ 0</div>
-                            <small class="text-muted">Average / Person</small>
+                            <i class="fas fa-chart-pie text-avg"></i>
+                            <div class="stats-value text-avg" id="avg-amount">৳ 0</div>
+                            <div class="stats-label">Average / Person</div>
                         </div>
                     </div>
                 </div>
@@ -450,11 +512,11 @@
                     <table class="table mb-0">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Taka</th>
-                                <th>Meal</th>
-                                <th>Hand Cash</th>
-                                <th id="edit-col-header" style="display:none;">Action</th>
+                                <th><i class="fas fa-user me-1"></i> Name</th>
+                                <th><i class="fas fa-money-bill me-1"></i> Taka</th>
+                                <th><i class="fas fa-utensils me-1"></i> Meal</th>
+                                <th><i class="fas fa-hand-holding-usd me-1"></i> Hand Cash</th>
+                                <th id="edit-col-header" style="display:none;"><i class="fas fa-edit me-1"></i> Action</th>
                             </tr>
                         </thead>
                         <tbody id="member-list"></tbody>
@@ -468,9 +530,9 @@
             <div class="summary-table-container">
                 <div class="summary-table-wrapper">
                     <div class="summary-title"><i class="fas fa-chart-line me-2"></i> Reports & Analytics</div>
-                    <div style="padding: 40px; text-align: center;">
-                        <i class="fas fa-chart-line fa-2x text-muted mb-3"></i>
-                        <p class="text-muted">Coming soon!</p>
+                    <div style="padding: 50px; text-align: center;">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3" style="color: #c8e6c9;"></i>
+                        <p class="text-muted">Monthly reports and analytics coming soon...</p>
                     </div>
                 </div>
             </div>
@@ -481,9 +543,9 @@
             <div class="summary-table-container">
                 <div class="summary-table-wrapper">
                     <div class="summary-title"><i class="fas fa-cog me-2"></i> Settings Panel</div>
-                    <div style="padding: 40px; text-align: center;">
-                        <i class="fas fa-cog fa-2x text-muted mb-3"></i>
-                        <p class="text-muted">Coming soon!</p>
+                    <div style="padding: 50px; text-align: center;">
+                        <i class="fas fa-cog fa-3x text-muted mb-3" style="color: #c8e6c9;"></i>
+                        <p class="text-muted">Settings and configuration coming soon...</p>
                     </div>
                 </div>
             </div>
@@ -504,7 +566,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="fas fa-lock me-2"></i>Admin Login</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div id="loginError" class="alert alert-danger d-none"></div>
@@ -516,7 +578,7 @@
                     <label class="form-label">Password</label>
                     <input type="password" id="adminPassword" class="form-control" placeholder="Enter password">
                 </div>
-                <button class="btn btn-primary w-100" onclick="verifyLogin()">Login</button>
+                <button class="btn btn-success w-100" onclick="verifyLogin()"><i class="fas fa-sign-in-alt me-2"></i>Login</button>
             </div>
         </div>
     </div>
@@ -528,7 +590,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Member Data</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -550,7 +612,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" onclick="saveMemberData()">Save Changes</button>
+                <button class="btn btn-success" onclick="saveMemberData()">Save Changes</button>
             </div>
         </div>
     </div>
