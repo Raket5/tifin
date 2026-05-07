@@ -1,5 +1,5 @@
 // Web App URL
-const webAppUrl = "https://script.google.com/macros/s/AKfycbzqN1gjglWMpkU969zVZr3QvEGbVU82w7a_fvMnKVkaS8-o4h45powEMWih5EQFM_MV4g/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbwCCDwFojPH2RGGOQBL_lE8RdMkXTO6WkFGOKYnunKtAl5c1XLXqqQ4jj6RF71tGwUx6Q/exec";
 
 let membersData = [];
 let isAdmin = false;
@@ -124,17 +124,25 @@ function updateDashboardStats() {
     const totalAmount = membersData.reduce((sum, m) => sum + (Number(m.taka) || 0), 0);
     const avgAmount = totalMembers > 0 ? totalAmount / totalMembers : 0;
     
-    // Get expense from summary (if available)
     let totalExpense = 0;
     if (window.summaryData && window.summaryData.totalExpense) {
         totalExpense = Number(window.summaryData.totalExpense);
     }
     
-    document.getElementById('total-amt').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
+    // Update Summary Table (Separate)
+    document.getElementById('total-amt-display').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
+    document.getElementById('total-exp-display').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
+    document.getElementById('month-display').innerHTML = window.summaryData?.month || 'January';
+    
+    // Update Extra Stats
     document.getElementById('total-meals').innerText = totalMeals;
     document.getElementById('total-members').innerText = totalMembers;
     document.getElementById('avg-amount').innerHTML = `৳ ${avgAmount.toFixed(2)}`;
+    
+    // Update Footer
     document.getElementById('footer-total').innerHTML = `৳ ${totalAmount.toFixed(2)}`;
+    document.getElementById('footer-expense').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
+    document.getElementById('footer-month').innerText = window.summaryData?.month || 'January';
 }
 
 async function fetchData() {
@@ -149,17 +157,8 @@ async function fetchData() {
         membersData = data.members || [];
         window.summaryData = data.summary || {};
         
-        const month = window.summaryData.month || 'January';
-        const totalExpense = Number(window.summaryData.totalExpense) || 0;
-        
-        document.getElementById('month-text').innerText = month;
-        document.getElementById('month-display').innerHTML = `<i class="fas fa-calendar-alt me-2"></i>${month}`;
-        document.getElementById('footer-month').innerText = month;
-        document.getElementById('total-exp').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
-        document.getElementById('footer-expense').innerHTML = `৳ ${totalExpense.toFixed(2)}`;
-        
-        renderMembersTable();
         updateDashboardStats();
+        renderMembersTable();
         
         document.getElementById('loader').style.display = 'none';
         
